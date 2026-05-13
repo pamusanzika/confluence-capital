@@ -1,0 +1,78 @@
+
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gruppo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playwrite+IE:wght@100..400&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gruppo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Oxanium:wght@200..800&family=Playwrite+IE:wght@100..400&display=swap');
+
+
+@import "tailwindcss";
+
+
+
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: black;
+  scrollbar-width: none;
+  
+}
+
+html {
+
+  scrollbar-width: none;
+}
+
+
+
+
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+  
+}
+
+/* #0B0F2A */
+
+
+/* bg-gradient-to-r from-[#1687f1] to-[#d4af37] bg-clip-text text-transparent */
+
+/*#0B0F2A*/
+
+/*gold */
+/* bg-gradient-to-r from-[#8a6b1f] via-[#d4af37] to-[#b8891a] bg-clip-text text-transparent */
+
+
+.new-font{
+font-family: "Oxanium", sans-serif;
+}
+
+
+:root {
+  --primary-color: #032136;
+
+  
+  --secondary-color: #d4af37;
+  --text-color: #ffffff;
+  --bg-color: #0a0a0a;
+  --gold-gradient: linear-gradient(
+    to right,
+    #8a6b1f,
+    #d4af37,
+    #f7e7a1,
+    #b8891a
+  );
+
+  
+  --blue-silver-gradient: linear-gradient(
+    to right,
+    #27b9f3,
+    #27b9f3,
+    #bfc1c2
+  );
+}
+
+
+
