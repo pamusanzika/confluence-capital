@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SmoothScroll from './components/SmoothScroll';
@@ -11,12 +11,12 @@ import CreditPage from './components/Credit/CreditPage';
 import DealBookPage from './components/DealBook/DealBookPage';
 import BlogsPage from './components/Blogs/BlogsPage';
 import ContactPage from './components/Contact/ContactPage';
+const AdminApp = lazy(() => import('./admin/AdminApp'));
 
-const App = () => {
+const PublicLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
 
-  // 1. Handle the initial site load
   useEffect(() => {
     const handleInitialLoad = () => {
       setTimeout(() => setIsLoading(false), 1800);
@@ -24,37 +24,21 @@ const App = () => {
     handleInitialLoad();
   }, []);
 
-  // 2. Handle loading state AND scroll reset when moving through pages
   useEffect(() => {
-    // Start loading
     setIsLoading(true);
-
-    /**
-     * FIX: Reset scroll immediately. 
-     * Since you use SmoothScroll, window.scrollTo(0,0) might be 
-     * overridden, so we call it here and again after the timer.
-     */
     window.scrollTo(0, 0);
 
     const timer = setTimeout(() => {
       setIsLoading(false);
-      
-      // Secondary reset to ensure we are at the top once content renders
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'instant'
-      });
-    }, 1200); 
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }, 1200);
 
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
   return (
     <SmoothScroll>
-      {/* The Loader stays outside the main div to cover everything */}
       <LoadingPage isVisible={isLoading} />
-
       <div className="relative">
         <Navbar />
         <Routes>
@@ -70,6 +54,20 @@ const App = () => {
       </div>
     </SmoothScroll>
   );
+};
+
+const App = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
+  if (isAdmin) {
+    return (
+      <Suspense fallback={<LoadingPage isVisible={true} />}>
+        <AdminApp />
+      </Suspense>
+    );
+  }
+  return <PublicLayout />;
 };
 
 export default App;
