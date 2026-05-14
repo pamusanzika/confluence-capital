@@ -1459,6 +1459,14 @@
   grid-template-columns: 1fr;
   gap: 20px;
 }
+
+/* Analytics chart grid — 2 columns on desktop, stacks on mobile */
+.a-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
 /* Settings Page */
 .a-settings-grid {
   display: grid;
@@ -1563,6 +1571,11 @@
   /* Stats: 2 columns */
   .a-stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Chart grid: single column on tablet */
+  .a-chart-grid {
+    grid-template-columns: 1fr;
   }
 }
 

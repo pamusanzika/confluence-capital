@@ -22,9 +22,7 @@ function mapDbPost(p) {
     readTime: p.reading_time || '5 min read',
     category: p.category || 'Market Insights',
     img: p.image_url || '',
-    author: p.author_name || 'Confluence Editorial',
-    authorPosition: p.author_position || 'Strategic Advisor',
-    authorImg: p.author_image_url || null,
+    author: 'Confluence Editorial',
   };
 }
 
@@ -83,6 +81,12 @@ const BlogDetail = () => {
 
           if (dbPost) {
             setPost(mapDbPost(dbPost));
+
+            // Track this page view
+            supabase.from('blog_views').insert({
+              blog_id: dbPost.id,
+              blog_title: dbPost.title,
+            }).then(() => {});
 
             // Related: same category, exclude current post, max 3
             const related = data
@@ -177,15 +181,12 @@ const BlogDetail = () => {
 
             {post.author && (
               <div className="flex items-center gap-3 text-white/80">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
-                  {post.authorImg
-                    ? <img src={post.authorImg} alt={post.author} className="w-full h-full object-cover" />
-                    : <User size={20} className="text-[#d4af37]" />
-                  }
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <User size={20} className="text-[#d4af37]" />
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest">{post.author}</p>
-                  <p className="text-[10px] text-white/50">{post.authorPosition || 'Strategic Advisor'}</p>
+                  <p className="text-[10px] text-white/50">Strategic Advisor</p>
                 </div>
               </div>
             )}

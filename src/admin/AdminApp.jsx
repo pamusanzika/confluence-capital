@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   LayoutDashboard, Briefcase, BookOpen, Settings as SettingsIcon, LogOut,
-  Search, ChevronRight, Menu, X
+  Search, ChevronRight, Menu, X, BarChart2,
 } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import './admin.css'
@@ -14,6 +14,7 @@ import DealForm from './pages/deals/DealForm'
 import BlogList from './pages/blog/BlogList'
 import BlogForm from './pages/blog/BlogForm'
 import Settings from './pages/Settings'
+import Analytics from './pages/Analytics'
 
 const NAV = [
   { id: 'dashboard', label: 'Dashboard', Icon: LayoutDashboard },
@@ -21,6 +22,7 @@ const NAV = [
   { id: 'blog', label: 'Blog', Icon: BookOpen },
 ]
 const NAV2 = [
+  { id: 'analytics', label: 'Analytics', Icon: BarChart2 },
   { id: 'settings', label: 'Settings', Icon: SettingsIcon },
 ]
 
@@ -232,6 +234,7 @@ export default function AdminApp() {
     blog: ['Workspace', 'Blog'],
     'blog-form': ['Workspace', 'Blog', editingBlog ? 'Edit Post' : 'New Post'],
     settings: ['Workspace', 'Settings'],
+    analytics: ['Workspace', 'Analytics'],
   }[route] || ['Workspace']
 
   const sidebarActive = route === 'deal-form' ? 'deals' : route === 'blog-form' ? 'blog' : route
@@ -330,6 +333,9 @@ export default function AdminApp() {
             )}
             {route === 'settings' && (
               <Settings user={session.user} showToast={showToast} />
+            )}
+            {route === 'analytics' && (
+              <Analytics />
             )}
           </div>
         </div>

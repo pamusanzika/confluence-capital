@@ -31,11 +31,6 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
           <div className="a-page-title">Dashboard</div>
           <div className="a-page-sub">Overview of your Deal Book and Blog content.</div>
         </div>
-        <div className="a-actions">
-          <button className="a-btn primary" onClick={onCreate}>
-            <Plus size={15} /> New deal
-          </button>
-        </div>
       </div>
 
       <div className="a-stats">

@@ -69,8 +69,16 @@ const DealBookCards = () => {
     document.body.removeChild(link);
   };
 
-  const handleOpen = (pdfLink) => {
-    window.open(pdfLink, '_blank');
+  const handleOpen = async (deal) => {
+    window.open(deal.pdfLink, '_blank');
+    try {
+      await supabase.from('pdf_downloads').insert({
+        deal_id: deal.id,
+        deal_title: deal.title,
+      });
+    } catch {
+      // silent — never block the user experience
+    }
   };
 
   return (
@@ -162,7 +170,7 @@ const DealBookCards = () => {
                   </Link>
 
                   <button
-                    onClick={() => handleOpen(deal.pdfLink)}
+                    onClick={() => handleOpen(deal)}
                     className="w-full cursor-pointer bg-[var(--primary-color)] text-white py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-[#061e3f] transition-colors"
                   >
                     <Download size={18} />

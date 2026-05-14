@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { ArrowLeft, Check, Upload, Trash2, User } from 'lucide-react'
+import { ArrowLeft, Check, Upload, Trash2 } from 'lucide-react'
 import { supabase } from '../../supabaseClient'
 
 const BLOG_CATEGORIES = ['Equity', 'Credit', 'Market Insights']
@@ -16,14 +16,8 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
   )
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(post?.image_url || null)
-  // Author fields
-  const [authorName, setAuthorName] = useState(post?.author_name || '')
-  const [authorPosition, setAuthorPosition] = useState(post?.author_position || '')
-  const [authorImageFile, setAuthorImageFile] = useState(null)
-  const [authorImagePreview, setAuthorImagePreview] = useState(post?.author_image_url || null)
   const [saving, setSaving] = useState(false)
   const imageRef = useRef(null)
-  const authorImageRef = useRef(null)
 
   function onImageChange(e) {
     const file = e.target.files?.[0]
@@ -32,19 +26,11 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
     setImagePreview(URL.createObjectURL(file))
   }
 
-  function onAuthorImageChange(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setAuthorImageFile(file)
-    setAuthorImagePreview(URL.createObjectURL(file))
-  }
-
   async function handleSave() {
     if (!title.trim()) { showToast('Please enter a title'); return }
     setSaving(true)
     try {
       let image_url = post?.image_url || null
-      let author_image_url = post?.author_image_url || null
 
       if (imageFile) {
         const path = `${Date.now()}-${imageFile.name}`
@@ -60,17 +46,6 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         console.log('supabase.storage.getPublicUrl (blog-images)', { path: data.path, publicResult, image_url })
       }
 
-      if (authorImageFile) {
-        const path = `authors/${Date.now()}-${authorImageFile.name}`
-        const { data, error } = await supabase.storage.from('blog-images').upload(path, authorImageFile, { upsert: true })
-        if (error) throw error
-
-        const publicResult = supabase.storage.from('blog-images').getPublicUrl(data.path)
-        author_image_url = publicResult?.data?.publicUrl || publicResult?.publicUrl || (
-          `${import.meta.env.VITE_SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/public/blog-images/${data.path}`
-        )
-      }
-
       const payload = {
         title: title.trim(),
         short_description: shortDesc.trim(),
@@ -79,9 +54,6 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         image_url,
         reading_time: readingTime.trim(),
         updated_date: updatedDate || null,
-        author_name: authorName.trim() || null,
-        author_position: authorPosition.trim() || null,
-        author_image_url,
       }
 
       if (isEdit) {
@@ -153,81 +125,6 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
                 <Trash2 size={13} /> Remove image
               </button>
             )}
-          </div>
-
-          {/* Author */}
-          <div className="a-form-section">
-            <h3>Author</h3>
-            <div className="a-sec-sub">Who wrote this post — displayed on the blog detail page.</div>
-
-            {/* Author photo */}
-            <div className="a-field-group">
-              <label className="a-lbl">Author photo</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                {/* Avatar preview circle */}
-                <div
-                  style={{
-                    width: 72, height: 72, borderRadius: '50%',
-                    background: 'var(--surface-2)',
-                    border: '2px dashed var(--border)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    overflow: 'hidden', flexShrink: 0, cursor: 'pointer',
-                  }}
-                  onClick={() => authorImageRef.current?.click()}
-                >
-                  {authorImagePreview
-                    ? <img src={authorImagePreview} alt="Author" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <User size={28} style={{ color: 'var(--muted)' }} />
-                  }
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <button
-                    className="a-btn sm"
-                    type="button"
-                    onClick={() => authorImageRef.current?.click()}
-                  >
-                    <Upload size={13} /> {authorImagePreview ? 'Replace photo' : 'Upload photo'}
-                  </button>
-                  {authorImagePreview && (
-                    <button
-                      className="a-btn sm danger"
-                      type="button"
-                      onClick={() => { setAuthorImageFile(null); setAuthorImagePreview(null) }}
-                    >
-                      <Trash2 size={13} /> Remove
-                    </button>
-                  )}
-                </div>
-              </div>
-              <input
-                ref={authorImageRef}
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={onAuthorImageChange}
-              />
-              <div className="a-hint">Square photo recommended. PNG, JPG up to 4MB.</div>
-            </div>
-
-            <div className="a-field-group">
-              <label className="a-lbl">Author name</label>
-              <input
-                className="a-inp"
-                value={authorName}
-                onChange={e => setAuthorName(e.target.value)}
-                placeholder="e.g. Sarah Chen"
-              />
-            </div>
-
-            <div className="a-field-group">
-              <label className="a-lbl">Author position / title</label>
-              <input
-                className="a-inp"
-                value={authorPosition}
-                onChange={e => setAuthorPosition(e.target.value)}
-                placeholder="e.g. Senior Portfolio Analyst"
-              />
-            </div>
           </div>
 
           {/* Meta */}
