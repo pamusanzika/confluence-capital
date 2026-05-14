@@ -24,6 +24,7 @@ export default function BlogList({ onCreate, onEdit, onRefresh, showToast, searc
   const [loading, setLoading] = useState(true)
 
   const [cat, setCat] = useState('all')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [deleting, setDeleting] = useState(null)
 
   useEffect(() => { fetchPosts() }, [])
@@ -44,11 +45,18 @@ export default function BlogList({ onCreate, onEdit, onRefresh, showToast, searc
     onRefresh()
   }
 
+  const isPublished = p => !p.status || p.status === 'published'
+
   const filtered = posts.filter(p => {
     if (searchQuery && !p.title?.toLowerCase().includes(searchQuery.toLowerCase())) return false
     if (cat !== 'all' && p.category !== cat) return false
+    if (statusFilter === 'published' && !isPublished(p)) return false
+    if (statusFilter === 'draft' && p.status !== 'draft') return false
     return true
   })
+
+  const publishedCount = posts.filter(isPublished).length
+  const draftCount = posts.filter(p => p.status === 'draft').length
 
   return (
     <>
@@ -69,6 +77,21 @@ export default function BlogList({ onCreate, onEdit, onRefresh, showToast, searc
           <div className="a-field search">
             <Search size={14} />
             <input placeholder="Search by title…" value={searchQuery} onChange={e => onSearchChange(e.target.value)} />
+          </div>
+          <div className="a-chips">
+            {[
+              { id: 'all',       label: 'All',       count: posts.length },
+              { id: 'published', label: 'Published',  count: publishedCount },
+              { id: 'draft',     label: 'Draft',      count: draftCount },
+            ].map(({ id, label, count }) => (
+              <button
+                key={id}
+                className={`a-chip${statusFilter === id ? ' active' : ''}`}
+                onClick={() => setStatusFilter(id)}
+              >
+                {label} <span className="a-cnt">{count}</span>
+              </button>
+            ))}
           </div>
           <div className="a-chips" style={{ marginLeft: 'auto' }}>
             <button className={`a-chip${cat === 'all' ? ' active' : ''}`} onClick={() => setCat('all')}>
@@ -93,7 +116,8 @@ export default function BlogList({ onCreate, onEdit, onRefresh, showToast, searc
           <table className="a-table">
             <thead>
               <tr>
-                <th style={{ width: '38%' }}>Title</th>
+                <th style={{ width: '35%' }}>Title</th>
+                <th>Status</th>
                 <th>Category</th>
                 <th>Reading time</th>
                 <th>Updated</th>
@@ -118,6 +142,13 @@ export default function BlogList({ onCreate, onEdit, onRefresh, showToast, searc
                         </div>
                       </div>
                     </div>
+                  </td>
+                  <td>
+                    {isPublished(p) ? (
+                      <span className="a-badge open"><span className="a-dot" />Published</span>
+                    ) : (
+                      <span className="a-badge pending"><span className="a-dot" />Draft</span>
+                    )}
                   </td>
                   <td style={{ fontSize: 13, color: 'var(--ink-2)' }}>{p.category || '—'}</td>
                   <td style={{ fontSize: 13, color: 'var(--ink-2)' }}>{p.reading_time || '—'}</td>

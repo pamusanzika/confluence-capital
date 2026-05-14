@@ -16,7 +16,7 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
   )
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(post?.image_url || null)
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState('')   // '' | 'draft' | 'published'
   const imageRef = useRef(null)
 
   function onImageChange(e) {
@@ -26,9 +26,9 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
     setImagePreview(URL.createObjectURL(file))
   }
 
-  async function handleSave() {
+  async function handleSave(saveStatus) {
     if (!title.trim()) { showToast('Please enter a title'); return }
-    setSaving(true)
+    setSaving(saveStatus)
     try {
       let image_url = post?.image_url || null
 
@@ -41,9 +41,6 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         image_url = publicResult?.data?.publicUrl || publicResult?.publicUrl || (
           `${import.meta.env.VITE_SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/public/blog-images/${data.path}`
         )
-
-        // Debug output to inspect getPublicUrl result and final URL in browser console
-        console.log('supabase.storage.getPublicUrl (blog-images)', { path: data.path, publicResult, image_url })
       }
 
       const payload = {
@@ -54,6 +51,7 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         image_url,
         reading_time: readingTime.trim(),
         updated_date: updatedDate || null,
+        status: saveStatus,
       }
 
       if (isEdit) {
@@ -64,11 +62,11 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         if (error) throw error
       }
 
-      onSave()
+      onSave(saveStatus)
     } catch (err) {
       showToast(`Error: ${err.message}`)
     }
-    setSaving(false)
+    setSaving('')
   }
 
   return (
@@ -85,8 +83,11 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         </div>
         <div className="a-actions">
           <button className="a-btn ghost" onClick={onBack}>Cancel</button>
-          <button className="a-btn primary" onClick={handleSave} disabled={saving}>
-            <Check size={15} /> {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Publish post'}
+          <button className="a-btn" onClick={() => handleSave('draft')} disabled={!!saving}>
+            {saving === 'draft' ? 'Saving…' : 'Save as Draft'}
+          </button>
+          <button className="a-btn primary" onClick={() => handleSave('published')} disabled={!!saving}>
+            <Check size={15} /> {saving === 'published' ? 'Saving…' : isEdit ? 'Update' : 'Publish'}
           </button>
         </div>
       </div>
@@ -205,13 +206,16 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
 
           <div className="a-form-foot">
             <div className="a-saved">
-              <span className="a-dot-pulse" />
-              {isEdit ? 'Unsaved changes' : 'Draft'}
+              <span className="a-dot-pulse" style={{ background: post?.status === 'draft' ? 'var(--warn)' : 'var(--ok)' }} />
+              {isEdit ? (post?.status === 'draft' ? 'Draft' : 'Published') : 'Not yet saved'}
             </div>
             <div className="a-right">
               <button className="a-btn ghost" onClick={onBack}>Cancel</button>
-              <button className="a-btn primary" onClick={handleSave} disabled={saving}>
-                <Check size={15} /> {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Publish post'}
+              <button className="a-btn" onClick={() => handleSave('draft')} disabled={!!saving}>
+                {saving === 'draft' ? 'Saving…' : 'Save as Draft'}
+              </button>
+              <button className="a-btn primary" onClick={() => handleSave('published')} disabled={!!saving}>
+                <Check size={15} /> {saving === 'published' ? 'Saving…' : isEdit ? 'Update' : 'Publish'}
               </button>
             </div>
           </div>

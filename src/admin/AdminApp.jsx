@@ -221,8 +221,9 @@ export default function AdminApp() {
     setRoute('deals')
   }
 
-  function handleBlogSaved() {
-    showToast(`✓ Blog post ${editingBlog ? 'updated' : 'published'} successfully`)
+  function handleBlogSaved(status) {
+    const action = status === 'draft' ? 'saved as draft' : editingBlog ? 'updated' : 'published'
+    showToast(`✓ Blog post ${action} successfully`)
     fetchCounts()
     setRoute('blog')
   }
