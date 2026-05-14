@@ -10,6 +10,7 @@ import LoadingPage from './components/LoadingPage';
 import CreditPage from './components/Credit/CreditPage';
 import DealBookPage from './components/DealBook/DealBookPage';
 import BlogsPage from './components/Blogs/BlogsPage';
+import BlogDetail from './components/Blogs/BlogDetail';
 import ContactPage from './components/Contact/ContactPage';
 const AdminApp = lazy(() => import('./admin/AdminApp'));
 
@@ -48,6 +49,7 @@ const PublicLayout = () => {
           <Route path='/credit' element={<CreditPage />} />
           <Route path='/deal-book' element={<DealBookPage />} />
           <Route path='/blogs' element={<BlogsPage />} />
+          <Route path='/blogs/:slug' element={<BlogDetail />} />
           <Route path='/contact' element={<ContactPage />} />
         </Routes>
         <Footer />
