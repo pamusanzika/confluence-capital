@@ -54,12 +54,12 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
         <div className="a-stat">
           <div className="a-stat-label">Ongoing</div>
           <div className="a-num">{ongoing}</div>
-          <div className="a-delta"><span>In progress</span></div>
+          <div className="a-delta"><span style={{ color: 'var(--accent, #2563eb)' }}>In progress</span></div>
         </div>
         <div className="a-stat">
           <div className="a-stat-label">Closed</div>
           <div className="a-num">{closed}</div>
-          <div className="a-delta"><span>Completed/Closed</span></div>
+          <div className="a-delta"><span style={{ color: '#dc2626' }}>Completed/Closed</span></div>
         </div>
       </div>
 
