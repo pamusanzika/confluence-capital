@@ -40,7 +40,7 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
         </div>
       </div>
 
-      <div className="a-stats">
+      <div className="a-stats four">
         <div className="a-stat">
           <div className="a-stat-label">Total Deals</div>
           <div className="a-num">{deals.length}</div>
@@ -64,21 +64,19 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
       </div>
 
       {!loading && (
-        <div style={{ marginBottom: 24 }}>
-          <div className="a-stats four">
-            <div className="a-stat">
-              <div className="a-stat-label">Total Posts</div>
-              <div className="a-num">{blogs.length}</div>
-              <div className="a-delta"><span>All blog articles</span></div>
-            </div>
-            {blogCategoryCounts.map(({ cat, count }) => (
-              <div className="a-stat" key={cat}>
-                <div className="a-stat-label">{cat}</div>
-                <div className="a-num">{count}</div>
-                <div className="a-delta"><span>{count === 1 ? '1 post' : `${count} posts`}</span></div>
-              </div>
-            ))}
+        <div className="a-stats four">
+          <div className="a-stat">
+            <div className="a-stat-label">Total Posts</div>
+            <div className="a-num">{blogs.length}</div>
+            <div className="a-delta"><span>All blog articles</span></div>
           </div>
+          {blogCategoryCounts.map(({ cat, count }) => (
+            <div className="a-stat" key={cat}>
+              <div className="a-stat-label">{cat}</div>
+              <div className="a-num">{count}</div>
+              <div className="a-delta"><span>{count === 1 ? '1 post' : `${count} posts`}</span></div>
+            </div>
+          ))}
         </div>
       )}
 
