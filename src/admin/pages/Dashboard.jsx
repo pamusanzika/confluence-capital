@@ -24,6 +24,13 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
   const ongoing = deals.filter(d => d.status === 'Ongoing').length
   const closed = deals.filter(d => d.status === 'Closed').length
 
+  const BLOG_CATEGORIES = ['Equity', 'Credit', 'Market Insights']
+
+  const blogCategoryCounts = BLOG_CATEGORIES.map(cat => ({
+    cat,
+    count: blogs.filter(b => b.category === cat).length,
+  }))
+
   return (
     <>
       <div className="a-page-head">
@@ -40,9 +47,9 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
           <div className="a-delta"><span>All deal listings</span></div>
         </div>
         <div className="a-stat">
-          <div className="a-stat-label">Open <span className="a-pill">live</span></div>
+          <div className="a-stat-label">Open</div>
           <div className="a-num">{open}</div>
-          <div className="a-delta"><span className="up">Visible to investors</span></div>
+          <div className="a-delta"><span className="up">Open</span></div>
         </div>
         <div className="a-stat">
           <div className="a-stat-label">Ongoing</div>
@@ -54,12 +61,26 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
           <div className="a-num">{closed}</div>
           <div className="a-delta"><span>Completed/Closed</span></div>
         </div>
-        <div className="a-stat">
-          <div className="a-stat-label">Blog Posts</div>
-          <div className="a-num">{blogs.length}</div>
-          <div className="a-delta"><span>Published articles</span></div>
-        </div>
       </div>
+
+      {!loading && (
+        <div style={{ marginBottom: 24 }}>
+          <div className="a-stats four">
+            <div className="a-stat">
+              <div className="a-stat-label">Total Posts</div>
+              <div className="a-num">{blogs.length}</div>
+              <div className="a-delta"><span>All blog articles</span></div>
+            </div>
+            {blogCategoryCounts.map(({ cat, count }) => (
+              <div className="a-stat" key={cat}>
+                <div className="a-stat-label">{cat}</div>
+                <div className="a-num">{count}</div>
+                <div className="a-delta"><span>{count === 1 ? '1 post' : `${count} posts`}</span></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="a-dash-grid">
         {/* Recent Deals */}

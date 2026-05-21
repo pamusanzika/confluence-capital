@@ -434,6 +434,10 @@
   margin-bottom: 28px;
 }
 
+.a-stats.four {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .a-stat {
   background: #fff;
   border: 1px solid var(--line);
@@ -1569,7 +1573,8 @@
   }
 
   /* Stats: 2 columns */
-  .a-stats {
+  .a-stats,
+  .a-stats.four {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1601,7 +1606,8 @@
   }
 
   /* Stats: 2 columns */
-  .a-stats {
+  .a-stats,
+  .a-stats.four {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
