@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react'
 import {
-  ArrowLeft, Eye, Check, Upload, Trash2,
+  ArrowLeft, Check, Upload, Trash2,
   MapPin, Building2, TrendingUp, Percent, Clock,
-  Factory, Layers, RefreshCw, Flag, User, Tag
+  Factory, Layers, RefreshCw, Flag, User, Star,
+  DollarSign, BarChart2, Timer
 } from 'lucide-react'
 import { supabase } from '../../supabaseClient'
 
@@ -24,18 +25,29 @@ const TAG_SCHEMA = [
   { key: 'contact', label: 'Contact Person', placeholder: 'e.g. Nadeesha P.', Icon: User },
 ]
 
+const HOME_STATS = [
+  { key: 'dealValue', label: 'Deal Value',     placeholder: 'e.g. USD 5M',     Icon: DollarSign },
+  { key: 'irr',       label: 'IRR',            placeholder: 'e.g. +18%',        Icon: TrendingUp },
+  { key: 'moic',      label: 'MOIC',           placeholder: 'e.g. 2.5x',        Icon: BarChart2  },
+  { key: 'payback',   label: 'Payback Period', placeholder: 'e.g. 36 months',   Icon: Timer      },
+]
+
 export default function DealForm({ deal, onBack, onSave, showToast }) {
   const isEdit = !!deal
   const [title, setTitle] = useState(deal?.title || '')
   const [desc, setDesc] = useState(deal?.short_description || '')
   const [category, setCategory] = useState(deal?.category || CATEGORIES[0])
-  const [status, setStatus] = useState(deal?.status || 'Open')
+  const [status, setStatus] = useState(() => {
+    const map = { Closed: 'Sold', Ongoing: 'Open' }
+    return map[deal?.status] ?? deal?.status ?? 'Open'
+  })
   const [tags, setTags] = useState(deal?.tags || {})
   const [pub, setPub] = useState(new Set(deal?.public_tags || []))
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(deal?.image_url || null)
   const [pdfFile, setPdfFile] = useState(null)
   const [pdfName, setPdfName] = useState(deal?.pdf_url ? 'Existing document' : null)
+  const [featured, setFeatured] = useState(deal?.featured || false)
   const [saving, setSaving] = useState(false)
   const [tagToast, setTagToast] = useState('')
   const imageRef = useRef(null)
@@ -105,6 +117,7 @@ export default function DealForm({ deal, onBack, onSave, showToast }) {
         short_description: desc.trim(),
         category,
         status,
+        featured,
         image_url,
         pdf_url,
         tags,
@@ -273,8 +286,7 @@ export default function DealForm({ deal, onBack, onSave, showToast }) {
               <div className="a-statuspick">
                 {[
                   { v: 'Open', desc: 'Deal is currently accepting investments' },
-                  { v: 'Ongoing', desc: 'Investment process is in progress' },
-                  { v: 'Closed', desc: 'Deal is no longer accepting investments' },
+                  { v: 'Sold', desc: 'Deal has been successfully sold' },
                 ].map(({ v, desc: d }) => (
                 <div key={v} className={`a-opt${status === v ? ' on' : ''}`} onClick={() => setStatus(v)}>
                   <div className="a-radio" />
@@ -285,6 +297,27 @@ export default function DealForm({ deal, onBack, onSave, showToast }) {
                 </div>
                 ))}
               </div>
+            </div>
+          </div>
+
+          {/* Featured toggle */}
+          <div className="a-form-section">
+            <h3>Homepage visibility</h3>
+            <div className="a-sec-sub">Feature this deal in the Featured Transactions section on the home page. Maximum 3 deals can be featured at a time.</div>
+            <div
+              className={`a-opt${featured ? ' on' : ''}`}
+              style={{display: 'flex', marginTop: 12, cursor: 'pointer' }}
+              onClick={() => setFeatured(f => !f)}
+            >
+              <div className="a-radio" />
+              <div style={{ flex: 1 }}>
+                <div className="a-opt-name" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Star size={14} fill={featured ? '#d4af37' : 'none'} style={{ color: '#d4af37' }} />
+                  Feature on homepage
+                </div>
+                <div className="a-opt-desc">{featured ? 'This deal will appear in Featured Transactions' : 'Not shown in Featured Transactions'}</div>
+              </div>
+              <div className={`a-switch${featured ? ' on' : ''}`} style={{ flexShrink: 0 }} />
             </div>
           </div>
 
@@ -328,6 +361,28 @@ export default function DealForm({ deal, onBack, onSave, showToast }) {
                   </div>
                 )
               })}
+            </div>
+          </div>
+
+          {/* Homepage stats section */}
+          <div className="a-form-section">
+            <h3>Homepage stats</h3>
+            <div className="a-sec-sub">Powers the live ticker strip on the homepage. Fill in to include this deal in the scrolling stats band.</div>
+            <div className="a-tag-grid" style={{ marginTop: 14 }}>
+              {HOME_STATS.map(({ key, label, placeholder, Icon }) => (
+                <div key={key} className="a-tag-row">
+                  <div className="a-tlabel">
+                    <div className="a-nm"><Icon size={12} /> {label}</div>
+                  </div>
+                  <div className="a-tval">
+                    <input
+                      placeholder={placeholder}
+                      value={tags[key] || ''}
+                      onChange={e => setTag(key, e.target.value)}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

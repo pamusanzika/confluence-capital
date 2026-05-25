@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { ArrowLeft, Check, Upload, Trash2 } from 'lucide-react'
 import { supabase } from '../../supabaseClient'
+import RichTextEditor from './RichTextEditor'
 
 const BLOG_CATEGORIES = ['Equity', 'Credit', 'Market Insights']
 
@@ -10,6 +11,7 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
   const [shortDesc, setShortDesc] = useState(post?.short_description || '')
   const [category, setCategory] = useState(post?.category || BLOG_CATEGORIES[0])
   const [description, setDescription] = useState(post?.description || '')
+  const [writer, setWriter] = useState(post?.writer || '')
   const [readingTime, setReadingTime] = useState(post?.reading_time || '')
   const [updatedDate, setUpdatedDate] = useState(
     post?.updated_date ? post.updated_date.slice(0, 10) : new Date().toISOString().slice(0, 10)
@@ -47,7 +49,8 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         title: title.trim(),
         short_description: shortDesc.trim(),
         category,
-        description: description.trim(),
+        description,
+        writer: writer.trim(),
         image_url,
         reading_time: readingTime.trim(),
         updated_date: updatedDate || null,
@@ -192,15 +195,19 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
             </div>
 
             <div className="a-field-group">
-              <label className="a-lbl">Description (full article)</label>
-              <textarea
-                className="a-ta"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                rows={16}
-                placeholder="Write the full blog post content here…"
-                style={{ minHeight: 320 }}
+              <label className="a-lbl">Writer / Author</label>
+              <input
+                className="a-inp"
+                value={writer}
+                onChange={e => setWriter(e.target.value)}
+                placeholder="e.g. John Smith"
               />
+              <div className="a-hint">Author name displayed on the blog post.</div>
+            </div>
+
+            <div className="a-field-group">
+              <label className="a-lbl">Description (full article)</label>
+              <RichTextEditor value={description} onChange={setDescription} />
             </div>
           </div>
 

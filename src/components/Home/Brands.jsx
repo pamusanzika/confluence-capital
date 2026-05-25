@@ -1,52 +1,57 @@
-import React from 'react';
-import { GraduationCap, Landmark, ShoppingCart, Code2, Leaf, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {
+  TrendingUp,
+  UtensilsCrossed, BedDouble, Factory, ShoppingCart,
+  Cpu, Home, Leaf, Heart, BarChart2,
+} from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
+
+const CATEGORY_ICON = {
+  'Food & Beverage': <UtensilsCrossed size={18} />,
+  'Hospitality':     <BedDouble size={18} />,
+  'Manufacturing':   <Factory size={18} />,
+  'Retail':          <ShoppingCart size={18} />,
+  'Technology':      <Cpu size={18} />,
+  'Real Estate':     <Home size={18} />,
+  'Agriculture':     <Leaf size={18} />,
+  'Healthcare':      <Heart size={18} />,
+};
 
 const Brands = () => {
-  // Updated data to match client's specific advisory verticals
-  const stats = [
-    { 
-      label: 'INTERNATIONAL SCHOOLS', 
-      value: '2B+', 
-      growth: '+14%', 
-      icon: <GraduationCap size={18} />,
-      detail: 'Institutional Valuation'
-    },
-    { 
-      label: 'BANKING & FINANCE', 
-      value: '5B+', 
-      growth: '+08%', 
-      icon: <Landmark size={18} />,
-      detail: 'Asset Restructuring'
-    },
-    { 
-      label: 'RETAIL & MANUFACTURING', 
-      value: '3B+', 
-      growth: '+11%', 
-      icon: <ShoppingCart size={18} />,
-      detail: 'Capital Deployment'
-    },
-    { 
-      label: 'TECH & FINTECH', 
-      value: '4B+', 
-      growth: '+24%', 
-      icon: <Code2 size={18} />,
-      detail: 'Equity Infusion'
-    },
-    { 
-      label: 'GREEN FINANCE', 
-      value: '1.5B', 
-      growth: '+32%', 
-      icon: <Leaf size={18} />,
-      detail: 'Project Financing'
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    async function fetchStats() {
+      const { data } = await supabase
+        .from('deals')
+        .select('category, title, tags')
+        .order('created_at', { ascending: false });
+
+      if (!data) return;
+
+      const mapped = data
+        .filter(d => d.tags?.dealValue)
+        .map(d => ({
+          label:   (d.category || '').toUpperCase(),
+          title:   d.title || '',
+          value:   d.tags.dealValue,
+          irr:     d.tags.irr || '',
+          payback: d.tags.payback || '',
+          icon:    CATEGORY_ICON[d.category] || <BarChart2 size={18} />,
+        }));
+
+      setStats(mapped);
     }
-  ];
+    fetchStats();
+  }, []);
+
+  if (stats.length === 0) return null;
 
   const tripleStats = [...stats, ...stats, ...stats];
 
   return (
     <section className="w-full py-12 bg-white overflow-hidden">
       <div className="relative flex items-center">
-        
         <div className="flex gap-5 animate-scroll-infinite hover:[animation-play-state:paused]">
           {tripleStats.map((item, index) => (
             <div
@@ -55,7 +60,7 @@ const Brands = () => {
             >
               {/* Internal Grid/Structure Lines */}
               <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50/30 rounded-full blur-3xl opacity-0 transition-opacity duration-700" />
-              
+
               {/* Header */}
               <div className="flex justify-between items-start relative z-10">
                 <div className="flex flex-col gap-1">
@@ -77,27 +82,33 @@ const Brands = () => {
                 <span className="text-4xl font-bold bg-gradient-to-r from-[#1687f1] to-[#d4af37] bg-clip-text text-transparent tracking-tighter transition-colors duration-500">
                   {item.value}
                 </span>
-                <p className="text-[11px] text-neutral-500 font-medium tracking-tight">
-                  {item.detail}
-                </p>
+                {item.title && (
+                  <p className="text-[11px] text-neutral-500 font-medium tracking-tight">
+                    {item.title}
+                  </p>
+                )}
               </div>
 
               {/* Footer - Metric Bar */}
               <div className="absolute bottom-0 left-0 w-full px-6 py-4 flex items-center justify-between bg-[var(--primary-color)] transition-colors">
                 <div className="flex items-center gap-2">
-                  <span className="flex items-center text-[10px] font-bold text-emerald-600">
-                    <TrendingUp size={10} className="mr-1" />
-                    {item.growth}
+                  {item.irr && (
+                    <span className="flex items-center text-[10px] font-bold text-emerald-600">
+                      <TrendingUp size={10} className="mr-1" />
+                      {item.irr}
+                    </span>
+                  )}
+                  <span className="text-[9px] font-bold text-neutral-300 uppercase tracking-widest">
+                    IRR{item.payback ? ` · ${item.payback}` : ''}
                   </span>
-                  <span className="text-[9px] font-bold text-neutral-300 uppercase tracking-widest">Growth</span>
                 </div>
-                
+
                 {/* Micro Visualizer */}
                 <div className="flex gap-[2px] items-end h-3">
                   {[40, 70, 50, 90].map((h, i) => (
-                    <div 
-                      key={i} 
-                      className="w-[3px] bg-neutral-200 group-hover:bg-blue-500 transition-all duration-500 rounded-full" 
+                    <div
+                      key={i}
+                      className="w-[3px] bg-neutral-200 group-hover:bg-blue-500 transition-all duration-500 rounded-full"
                       style={{ height: `${h}%` }}
                     />
                   ))}

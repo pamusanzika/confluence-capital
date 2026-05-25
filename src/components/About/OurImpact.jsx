@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useTransform, animate, useInView } from 'framer-motion';
 import { TrendingUp, Briefcase, Clock, Users } from 'lucide-react';
+import { supabase } from '../../admin/supabaseClient';
 
 // Helper component for the counting logic
 const Counter = ({ value }) => {
@@ -30,43 +31,67 @@ const Counter = ({ value }) => {
   );
 };
 
-const stats = [
+const STATS_TEMPLATE = [
   {
-    value: "$10B+",
-    label: "In Transactions",
-    description: "Minimize risk, maximize returns.",
-    icon: <TrendingUp className="w-5 h-5 text-blue-600" />,
+    key: "stat_years_experience",
+    suffix: "+",
+    label: "Years of Market Experience",
+    description: "Decades of deep market mastery and expertise.",
+    icon: <Clock className="w-5 h-5 text-blue-600" />,
     color: "bg-indigo-50",
     gradient: "from-indigo-500/20 to-purple-500/20"
   },
   {
-    value: "150+",
-    label: "Deals Executed",
-    description: "Precision in every closing.",
+    key: "stat_active_projects",
+    suffix: "+",
+    label: "Active Projects Delivered",
+    description: "Precision and excellence in every closing.",
     icon: <Briefcase className="w-5 h-5 text-blue-600" />,
     color: "bg-purple-50",
     gradient: "from-purple-500/20 to-pink-500/20"
   },
   {
-    value: "25+",
-    label: "Years Experience",
-    description: "Decades of market mastery.",
-    icon: <Clock className="w-5 h-5 text-blue-600" />,
+    key: "stat_successful_exits",
+    suffix: "+",
+    label: "Proven Successful Exits",
+    description: "Minimize risk, maximize returns.",
+    icon: <TrendingUp className="w-5 h-5 text-blue-600" />,
     color: "bg-blue-50",
     gradient: "from-blue-500/20 to-indigo-500/20"
   },
   {
-    value: "500+",
-    label: "Global Clients",
-    description: "Trusted by industry leaders.",
+    key: "stat_project_pipeline",
+    suffix: "M",
+    label: "Project Pipeline (USD)",
+    description: "Trusted by industry leaders globally.",
     icon: <Users className="w-5 h-5 text-blue-600" />,
     color: "bg-violet-50",
     gradient: "from-violet-500/20 to-purple-500/20",
-    featured: true 
+    featured: true
   }
 ];
 
 const OurImpact = () => {
+  const [numericValues, setNumericValues] = useState({
+    stat_years_experience: 40,
+    stat_active_projects: 30,
+    stat_successful_exits: 7,
+    stat_project_pipeline: 80,
+  });
+
+  useEffect(() => {
+    supabase.from('site_settings').select('key, value').then(({ data }) => {
+      if (!data?.length) return;
+      const map = Object.fromEntries(data.map((r) => [r.key, Number(r.value)]));
+      setNumericValues((prev) => ({ ...prev, ...map }));
+    });
+  }, []);
+
+  const stats = STATS_TEMPLATE.map((s) => ({
+    ...s,
+    value: `${numericValues[s.key]}${s.suffix}`,
+  }));
+
   return (
     <section className="bg-[#F8F9FF] py-24 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">

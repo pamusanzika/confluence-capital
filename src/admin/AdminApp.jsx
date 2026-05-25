@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   LayoutDashboard, Briefcase, BookOpen, Settings as SettingsIcon, LogOut,
-  Search, ChevronRight, Menu, X, BarChart2,
+  Search, ChevronRight, Menu, X, BarChart2, MessageSquare, TrendingUp, Mail,
 } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import './admin.css'
@@ -15,14 +15,21 @@ import BlogList from './pages/blog/BlogList'
 import BlogForm from './pages/blog/BlogForm'
 import Settings from './pages/Settings'
 import Analytics from './pages/Analytics'
+import TestimonialsList from './pages/testimonials/TestimonialsList'
+import TestimonialForm from './pages/testimonials/TestimonialForm'
+import HomeStats from './pages/HomeStats'
+import NewsletterList from './pages/NewsletterList'
 
 const NAV = [
   { id: 'dashboard', label: 'Dashboard', Icon: LayoutDashboard },
   { id: 'deals', label: 'Deals', Icon: Briefcase },
   { id: 'blog', label: 'Blog', Icon: BookOpen },
+  { id: 'testimonials', label: 'Testimonials', Icon: MessageSquare },
+  { id: 'homestats', label: 'Home Stats', Icon: TrendingUp },
 ]
 const NAV2 = [
   { id: 'analytics', label: 'Analytics', Icon: BarChart2 },
+  { id: 'newsletter', label: 'Newsletter', Icon: Mail },
   { id: 'settings', label: 'Settings', Icon: SettingsIcon },
 ]
 
@@ -67,6 +74,9 @@ function Sidebar({ active, onNav, counts, onLogout, user, isOpen, onClose }) {
           )}
           {id === 'blog' && counts.blogs != null && (
             <span className="a-badge">{counts.blogs}</span>
+          )}
+          {id === 'testimonials' && counts.testimonials != null && (
+            <span className="a-badge">{counts.testimonials}</span>
           )}
         </button>
       ))}
@@ -143,7 +153,8 @@ export default function AdminApp() {
   const [route, setRoute] = useState('dashboard')
   const [editingDeal, setEditingDeal] = useState(null)
   const [editingBlog, setEditingBlog] = useState(null)
-  const [counts, setCounts] = useState({ deals: null, blogs: null })
+  const [editingTestimonial, setEditingTestimonial] = useState(null)
+  const [counts, setCounts] = useState({ deals: null, blogs: null, testimonials: null })
   const [searchQuery, setSearchQuery] = useState('')
   const [toast, setToast] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -187,11 +198,12 @@ export default function AdminApp() {
   }, [sidebarOpen])
 
   async function fetchCounts() {
-    const [{ count: dealCount }, { count: blogCount }] = await Promise.all([
+    const [{ count: dealCount }, { count: blogCount }, { count: testimonialCount }] = await Promise.all([
       supabase.from('deals').select('*', { count: 'exact', head: true }),
       supabase.from('blogs').select('*', { count: 'exact', head: true }),
+      supabase.from('testimonials').select('*', { count: 'exact', head: true }),
     ])
-    setCounts({ deals: dealCount ?? 0, blogs: blogCount ?? 0 })
+    setCounts({ deals: dealCount ?? 0, blogs: blogCount ?? 0, testimonials: testimonialCount ?? 0 })
   }
 
   function showToast(msg) {
@@ -207,6 +219,7 @@ export default function AdminApp() {
     setRoute(id)
     setEditingDeal(null)
     setEditingBlog(null)
+    setEditingTestimonial(null)
     setSearchQuery('')
   }
 
@@ -214,6 +227,8 @@ export default function AdminApp() {
   function goEditDeal(d) { setSearchQuery(''); setEditingDeal(d); setRoute('deal-form') }
   function goCreateBlog() { setSearchQuery(''); setEditingBlog(null); setRoute('blog-form') }
   function goEditBlog(b) { setSearchQuery(''); setEditingBlog(b); setRoute('blog-form') }
+  function goCreateTestimonial() { setSearchQuery(''); setEditingTestimonial(null); setRoute('testimonial-form') }
+  function goEditTestimonial(t) { setSearchQuery(''); setEditingTestimonial(t); setRoute('testimonial-form') }
 
   function handleDealSaved() {
     showToast(`✓ Deal ${editingDeal ? 'updated' : 'published'} successfully`)
@@ -228,17 +243,26 @@ export default function AdminApp() {
     setRoute('blog')
   }
 
+  function handleTestimonialSaved() {
+    showToast(`✓ Testimonial ${editingTestimonial ? 'updated' : 'added'} successfully`)
+    setRoute('testimonials')
+  }
+
   const crumbs = {
     dashboard: ['Workspace', 'Dashboard'],
     deals: ['Workspace', 'Deals'],
     'deal-form': ['Workspace', 'Deals', editingDeal ? 'Edit Deal' : 'New Deal'],
     blog: ['Workspace', 'Blog'],
     'blog-form': ['Workspace', 'Blog', editingBlog ? 'Edit Post' : 'New Post'],
+    testimonials: ['Workspace', 'Testimonials'],
+    'testimonial-form': ['Workspace', 'Testimonials', editingTestimonial ? 'Edit Testimonial' : 'New Testimonial'],
+    homestats: ['Workspace', 'Home Stats'],
+    newsletter: ['Workspace', 'Newsletter Subscriptions'],
     settings: ['Workspace', 'Settings'],
     analytics: ['Workspace', 'Analytics'],
   }[route] || ['Workspace']
 
-  const sidebarActive = route === 'deal-form' ? 'deals' : route === 'blog-form' ? 'blog' : route
+  const sidebarActive = route === 'deal-form' ? 'deals' : route === 'blog-form' ? 'blog' : route === 'testimonial-form' ? 'testimonials' : route
 
   if (loading) {
     return (
@@ -330,6 +354,34 @@ export default function AdminApp() {
                 onBack={() => setRoute('blog')}
                 onSave={handleBlogSaved}
                 showToast={showToast}
+              />
+            )}
+            {route === 'testimonials' && (
+              <TestimonialsList
+                onCreate={goCreateTestimonial}
+                onEdit={goEditTestimonial}
+                onRefresh={fetchCounts}
+                showToast={showToast}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
+            )}
+            {route === 'testimonial-form' && (
+              <TestimonialForm
+                testimonial={editingTestimonial}
+                onBack={() => setRoute('testimonials')}
+                onSave={handleTestimonialSaved}
+                showToast={showToast}
+              />
+            )}
+            {route === 'homestats' && (
+              <HomeStats showToast={showToast} />
+            )}
+            {route === 'newsletter' && (
+              <NewsletterList
+                showToast={showToast}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
               />
             )}
             {route === 'settings' && (

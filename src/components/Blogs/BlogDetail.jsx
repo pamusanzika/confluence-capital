@@ -22,7 +22,7 @@ function mapDbPost(p) {
     readTime: p.reading_time || '5 min read',
     category: p.category || 'Market Insights',
     img: p.image_url || '',
-    author: 'Confluence Editorial',
+    author: p.writer || '',
   };
 }
 
@@ -41,12 +41,17 @@ function mapDbRelated(p) {
   };
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const BlogDetail = () => {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
   const [latestToShow, setLatestToShow] = useState(latestInsights);
   const [loading, setLoading] = useState(true);
+  const [subEmail, setSubEmail] = useState('');
+  const [subStatus, setSubStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+  const [subMessage, setSubMessage] = useState('');
 
   useEffect(() => {
     async function findPost() {
@@ -113,6 +118,26 @@ const BlogDetail = () => {
 
     findPost();
   }, [slug]);
+
+  async function handleSubscribe(e) {
+    e.preventDefault();
+    const email = subEmail.trim();
+    if (!EMAIL_RE.test(email)) {
+      setSubStatus('error');
+      setSubMessage('Please enter a valid email address.');
+      return;
+    }
+    setSubStatus('loading');
+    const { error } = await supabase.from('newsletter_subscriptions').insert({ email });
+    if (error) {
+      setSubStatus('error');
+      setSubMessage(error.code === '23505' ? 'This email is already subscribed.' : 'Something went wrong. Please try again.');
+    } else {
+      setSubStatus('success');
+      setSubMessage('You\'re subscribed! Thank you.');
+      setSubEmail('');
+    }
+  }
 
   // ── Loading state ────────────────────────────────────────────────────────────
   if (loading) {
@@ -185,10 +210,7 @@ const BlogDetail = () => {
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                   <User size={20} className="text-[#d4af37]" />
                 </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest">{post.author}</p>
-                  <p className="text-[10px] text-white/50">Strategic Advisor</p>
-                </div>
+                <p className="text-xs font-bold uppercase tracking-widest">{post.author}</p>
               </div>
             )}
           </motion.div>
@@ -278,16 +300,29 @@ const BlogDetail = () => {
               <div className="relative z-10">
                 <h3 className="text-xl font-bold mb-4">Stay Informed</h3>
                 <p className="text-sm text-white/60 mb-6 leading-relaxed">Get the latest market insights and strategic updates delivered to your inbox.</p>
-                <div className="flex flex-col gap-3">
-                  <input
-                    type="email"
-                    placeholder="Email address"
-                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:border-[#d4af37] transition-colors"
-                  />
-                  <button className="w-full bg-gradient-to-r from-[#1687f1] to-[#d4af37] text-white py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
-                    Subscribe
-                  </button>
-                </div>
+                {subStatus === 'success' ? (
+                  <p className="text-sm font-medium text-[#d4af37]">{subMessage}</p>
+                ) : (
+                  <form onSubmit={handleSubscribe} className="flex flex-col gap-3" noValidate>
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={subEmail}
+                      onChange={e => { setSubEmail(e.target.value); setSubStatus('idle'); }}
+                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:border-[#d4af37] transition-colors"
+                    />
+                    {subStatus === 'error' && (
+                      <p className="text-xs text-red-300">{subMessage}</p>
+                    )}
+                    <button
+                      type="submit"
+                      disabled={subStatus === 'loading'}
+                      className="w-full bg-gradient-to-r from-[#1687f1] to-[#d4af37] text-white py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-60"
+                    >
+                      {subStatus === 'loading' ? 'Subscribing…' : 'Subscribe'}
+                    </button>
+                  </form>
+                )}
               </div>
               <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 -mr-12 -mt-12 rounded-full blur-2xl group-hover:bg-[#d4af37]/10 transition-all duration-700" />
             </div>

@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react'
 import { Plus, ArrowRight, FileText, BookOpen } from 'lucide-react'
 import { supabase } from '../supabaseClient'
 
+function normalizeStatus(deal) {
+  const map = { Closed: 'Sold', Ongoing: 'Open' }
+  return { ...deal, status: map[deal.status] ?? deal.status }
+}
+
 export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQuery }) {
   const [deals, setDeals] = useState([])
   const [blogs, setBlogs] = useState([])
@@ -13,7 +18,7 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
         supabase.from('deals').select('*').order('created_at', { ascending: false }),
         supabase.from('blogs').select('*').order('created_at', { ascending: false }),
       ])
-      setDeals(d || [])
+      setDeals((d || []).map(normalizeStatus))
       setBlogs(b || [])
       setLoading(false)
     }
@@ -21,8 +26,7 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
   }, [])
 
   const open = deals.filter(d => d.status === 'Open').length
-  const ongoing = deals.filter(d => d.status === 'Ongoing').length
-  const closed = deals.filter(d => d.status === 'Closed').length
+  const sold = deals.filter(d => d.status === 'Sold').length
 
   const BLOG_CATEGORIES = ['Equity', 'Credit', 'Market Insights']
 
@@ -40,7 +44,7 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
         </div>
       </div>
 
-      <div className="a-stats four">
+      <div className="a-stats three">
         <div className="a-stat">
           <div className="a-stat-label">Total Deals</div>
           <div className="a-num">{deals.length}</div>
@@ -52,14 +56,9 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
           <div className="a-delta"><span className="up">Open</span></div>
         </div>
         <div className="a-stat">
-          <div className="a-stat-label">Ongoing</div>
-          <div className="a-num">{ongoing}</div>
-          <div className="a-delta"><span style={{ color: 'var(--accent, #2563eb)' }}>In progress</span></div>
-        </div>
-        <div className="a-stat">
-          <div className="a-stat-label">Closed</div>
-          <div className="a-num">{closed}</div>
-          <div className="a-delta"><span style={{ color: '#dc2626' }}>Completed/Closed</span></div>
+          <div className="a-stat-label">Sold</div>
+          <div className="a-num">{sold}</div>
+          <div className="a-delta"><span style={{ color: '#4B5563' }}>Completed/Sold</span></div>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Download, Search, Briefcase, MoreHorizontal, Trash2, Edit2 } from 'lucide-react'
+import { Plus, Search, Briefcase, Trash2, Edit2, Star } from 'lucide-react'
 import { supabase } from '../../supabaseClient'
 
 const CATEGORIES = [
@@ -32,10 +32,15 @@ export default function DealsList({ onCreate, onEdit, onRefresh, showToast, sear
 
   useEffect(() => { fetchDeals() }, [])
 
+  function normalizeStatus(deal) {
+    const map = { Closed: 'Sold', Ongoing: 'Open' }
+    return { ...deal, status: map[deal.status] ?? deal.status }
+  }
+
   async function fetchDeals() {
     setLoading(true)
     const { data } = await supabase.from('deals').select('*').order('created_at', { ascending: false })
-    setDeals(data || [])
+    setDeals((data || []).map(normalizeStatus))
     setLoading(false)
   }
 
@@ -48,6 +53,22 @@ export default function DealsList({ onCreate, onEdit, onRefresh, showToast, sear
     onRefresh()
   }
 
+  async function toggleFeatured(e, deal) {
+    e.stopPropagation()
+    if (!deal.featured) {
+      const featuredCount = deals.filter(d => d.featured).length
+      if (featuredCount >= 3) {
+        showToast('Maximum 3 featured deals allowed. Unfeature one first.')
+        return
+      }
+    }
+    const { error } = await supabase.from('deals').update({ featured: !deal.featured }).eq('id', deal.id)
+    if (error) { showToast('Error updating featured status'); return }
+    showToast(deal.featured ? 'Removed from featured' : 'Added to featured homepage')
+    fetchDeals()
+    onRefresh()
+  }
+
   const filtered = deals.filter(d => {
     if (searchQuery && !(d.title?.toLowerCase().includes(searchQuery.toLowerCase()))) return false
     if (cat !== 'All categories' && d.category !== cat) return false
@@ -56,8 +77,7 @@ export default function DealsList({ onCreate, onEdit, onRefresh, showToast, sear
   })
 
   const openN = deals.filter(d => d.status === 'Open').length
-  const ongN = deals.filter(d => d.status === 'Ongoing').length
-  const clsN = deals.filter(d => d.status === 'Closed').length
+  const sldN = deals.filter(d => d.status === 'Sold').length
 
   return (
     <>
@@ -93,11 +113,8 @@ export default function DealsList({ onCreate, onEdit, onRefresh, showToast, sear
             <button className={`a-chip${status === 'open' ? ' active' : ''}`} onClick={() => setStatus('open')}>
               Open <span className="a-cnt">{openN}</span>
             </button>
-            <button className={`a-chip${status === 'ongoing' ? ' active' : ''}`} onClick={() => setStatus('ongoing')}>
-              Ongoing <span className="a-cnt">{ongN}</span>
-            </button>
-            <button className={`a-chip${status === 'closed' ? ' active' : ''}`} onClick={() => setStatus('closed')}>
-              Closed <span className="a-cnt">{clsN}</span>
+            <button className={`a-chip${status === 'sold' ? ' active' : ''}`} onClick={() => setStatus('sold')}>
+              Sold <span className="a-cnt">{sldN}</span>
             </button>
           </div>
         </div>
@@ -114,6 +131,9 @@ export default function DealsList({ onCreate, onEdit, onRefresh, showToast, sear
                 <th>Status</th>
                 <th>Investment Range</th>
                 <th>Added</th>
+                <th style={{ width: 40 }} title="Featured on homepage">
+                  <Star size={13} style={{ color: 'var(--muted)' }} />
+                </th>
                 <th style={{ width: 80 }}></th>
               </tr>
             </thead>
@@ -144,6 +164,16 @@ export default function DealsList({ onCreate, onEdit, onRefresh, showToast, sear
                   </td>
                   <td style={{ color: 'var(--muted)', fontSize: 13 }}>
                     {new Date(d.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </td>
+                  <td onClick={e => e.stopPropagation()}>
+                    <button
+                      className="a-iconbtn"
+                      style={{ width: 30, height: 30, borderRadius: 7, color: d.featured ? '#d4af37' : 'var(--muted)' }}
+                      onClick={e => toggleFeatured(e, d)}
+                      title={d.featured ? 'Remove from homepage' : 'Feature on homepage (max 3)'}
+                    >
+                      <Star size={13} fill={d.featured ? '#d4af37' : 'none'} />
+                    </button>
                   </td>
                   <td>
                     <div style={{ display: 'flex', gap: 4 }}>
