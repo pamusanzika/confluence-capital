@@ -157,6 +157,7 @@ export default function Settings({ user, showToast }) {
           </div>
         </div>
       </div>
+
     </div>
   )
 }

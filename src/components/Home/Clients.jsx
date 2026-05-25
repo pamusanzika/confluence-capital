@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '../../lib/supabaseClient';
 
 const ORBITS = [
   { size: 'w-[500px] h-[500px] md:w-[700px] md:h-[700px]', opacity: 'border-gray-100' },
@@ -16,45 +17,38 @@ const AVATARS = [
   { id: 7, src: "https://i.pravatar.cc/150?u=l", top: '20%', left: '85%', delay: 0.1, msg: "Exceptional service!" },
 ];
 
-const TESTIMONIALS = [
-  {
-    name: "Noah Gilbert",
-    image: "https://i.pravatar.cc/150?u=b",
-    review: "The strategic insights provided transformed our capital deployment strategy entirely.",
-    subtext: "Confluence Capital's attention to detail and market analysis is unmatched in the industry today.",
-    stars: 5
-  },
-  {
-    name: "Sarah Jenkins",
-    image: "https://i.pravatar.cc/150?u=sara",
-    review: "A premium experience from start to finish. Their digital infrastructure is flawless.",
-    subtext: "We were looking for a partner that understands high-end finance, and we found it here.",
-    stars: 5
-  },
-  {
-    name: "Marcus Chen",
-    image: "https://i.pravatar.cc/150?u=marcus",
-    review: "The most advanced financial advisory platform I have used in my 15-year career.",
-    subtext: "Efficiency and aesthetic excellence are clearly at the core of everything they build.",
-    stars: 4
-  }
-];
-
 const Clients = () => {
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-    }, 3000);
-    return () => clearInterval(timer);
+    async function fetchFeatured() {
+      const { data } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('featured', true)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      setTestimonials(data || []);
+      setLoading(false);
+    }
+    fetchFeatured();
   }, []);
 
-  const current = TESTIMONIALS[index];
+  useEffect(() => {
+    if (testimonials.length < 2) return;
+    const timer = setInterval(() => {
+      setIndex(prev => (prev + 1) % testimonials.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [testimonials.length]);
+
+  const current = testimonials[index];
 
   return (
     <section className="relative min-h-screen w-full bg-[#F3F4F6] flex items-center justify-center overflow-hidden py-24">
-      
+
       {/* --- BACKGROUND ORBITAL RINGS --- */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         {ORBITS.map((orbit, i) => (
@@ -103,7 +97,7 @@ const Clients = () => {
 
       {/* --- MAIN CONTENT AREA --- */}
       <div className="relative z-10 container mx-auto px-4 flex flex-col items-center">
-        
+
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -118,55 +112,67 @@ const Clients = () => {
 
         {/* Testimonial Card */}
         <div className="w-full max-w-3xl min-h-[500px] flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="w-full bg-[#F9F9FB] p-10 md:p-20 text-center relative shadow-sm border border-gray-100"
-            >
-              {/* Central Profile Image */}
-              <div className="absolute -top-16 left-1/2 -translate-x-1/2">
-                <div className="w-32 h-32 rounded-full border-[8px] border-white shadow-2xl overflow-hidden bg-white">
-                  <img
-                    src={current.image}
-                    alt={current.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+          {loading && (
+            <div className="text-gray-400 text-sm">Loading…</div>
+          )}
 
-              {/* Testimonial Content */}
-              <div className="mt-12 space-y-6">
-                <div>
-                   {/* Star Rating */}
-                   <div className="flex justify-center gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <svg 
-                        key={i} 
-                        className={`w-5 h-5 ${i < current.stars ? "text-[#d4af37]" : "text-gray-300"}`} 
-                        fill="currentColor" 
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
+          {!loading && testimonials.length === 0 && (
+            <div className="w-full bg-[#F9F9FB] p-10 md:p-20 text-center shadow-sm border border-gray-100 text-gray-400 text-sm">
+              No featured testimonials yet.
+            </div>
+          )}
+
+          {!loading && testimonials.length > 0 && (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="w-full bg-[#F9F9FB] p-10 md:p-20 text-center relative shadow-sm border border-gray-100"
+              >
+                {/* Central Avatar */}
+                <div className="absolute -top-16 left-1/2 -translate-x-1/2">
+                  <div className="w-32 h-32 rounded-full border-[8px] border-white shadow-2xl overflow-hidden bg-gradient-to-br from-[#1687f1] to-[#d4af37] flex items-center justify-center">
+                    {current.image_url
+                      ? <img src={current.image_url} alt={current.customer_name} className="w-full h-full object-cover" />
+                      : <span className="text-white font-bold text-4xl">{current.customer_name?.[0]?.toUpperCase() || '?'}</span>
+                    }
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900">{current.name}</h4>
                 </div>
-                
-                <p className="text-xl md:text-2xl font-semibold text-gray-900 leading-relaxed italic">
-                  "{current.review}"
-                </p>
-                
-                <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-medium">
-                  {current.subtext}
-                </p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+
+                {/* Testimonial Content */}
+                <div className="mt-12 space-y-6">
+                  <div>
+                    {/* Star Rating */}
+                    <div className="flex justify-center gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg
+                          key={i}
+                          className="w-5 h-5 text-[#d4af37]"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-900">{current.customer_name}</h4>
+                    {(current.position || current.company) && (
+                      <p className="text-gray-500 text-sm mt-1">
+                        {[current.position, current.company].filter(Boolean).join(' · ')}
+                      </p>
+                    )}
+                  </div>
+
+                  <p className="text-xl md:text-2xl font-semibold text-gray-900 leading-relaxed italic">
+                    "{current.quote}"
+                  </p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          )}
         </div>
       </div>
     </section>

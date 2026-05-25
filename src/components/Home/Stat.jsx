@@ -1,26 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
+import { supabase } from "../../admin/supabaseClient";
 
-const stats = [
-  {
-    value: 40,
-    suffix: "+",
-    label: "Years of market experience",
-  },
-  {
-    value: 30,
-    suffix: "+",
-    label: "Active projects delivered",
-  },
-  {
-    value: 7,
-    suffix: "+",
-    label: "Proven successful exits",
-  },
-  {
-    value: 80,
-    suffix: "M",
-    label: "Project pipeline (USD)",
-  },
+const DEFAULT_STATS = [
+  { key: "stat_years_experience", value: 40, suffix: "+", label: "Years of market experience" },
+  { key: "stat_active_projects", value: 30, suffix: "+", label: "Active projects delivered" },
+  { key: "stat_successful_exits", value: 7, suffix: "+", label: "Proven successful exits" },
+  { key: "stat_project_pipeline", value: 80, suffix: "M", label: "Project pipeline (USD)" },
 ];
 
 const StatItem = ({ value, suffix, label, start }) => {
@@ -63,6 +48,15 @@ const StatItem = ({ value, suffix, label, start }) => {
 const Stat = () => {
   const ref = useRef(null);
   const [start, setStart] = useState(false);
+  const [stats, setStats] = useState(DEFAULT_STATS);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("key, value").then(({ data }) => {
+      if (!data?.length) return;
+      const map = Object.fromEntries(data.map((r) => [r.key, Number(r.value)]));
+      setStats(DEFAULT_STATS.map((s) => (map[s.key] != null ? { ...s, value: map[s.key] } : s)));
+    });
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

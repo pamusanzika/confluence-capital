@@ -25,14 +25,17 @@ const TAG_SCHEMA = {
 // Fallback image when a deal has no cover photo
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
 
+const STATUS_MAP = { Closed: 'Sold', Ongoing: 'Open' }
+
 /** Map a Supabase deal row → the shape the card renders */
 function mapDeal(row) {
+  const rawStatus = row.status || 'Open'
   return {
     id: row.id,
     title: row.title || 'Untitled Deal',
     description: row.short_description || '',
     tag: row.category || '',
-    status: row.status || 'Open',
+    status: STATUS_MAP[rawStatus] ?? rawStatus,
     image: row.image_url || FALLBACK_IMAGE,
     pdfLink: row.pdf_url || dealBook1,
     // Only the tags the admin chose to make public (up to 5)
