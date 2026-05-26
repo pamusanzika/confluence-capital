@@ -36,6 +36,7 @@ const Brands = () => {
           title:   d.title || '',
           value:   d.tags.dealValue,
           irr:     d.tags.irr || '',
+          moic:    d.tags.moic || '',
           payback: d.tags.payback || '',
           icon:    CATEGORY_ICON[d.category] || <BarChart2 size={18} />,
         }));
@@ -103,16 +104,12 @@ const Brands = () => {
                   </span>
                 </div>
 
-                {/* Micro Visualizer */}
-                <div className="flex gap-[2px] items-end h-3">
-                  {[40, 70, 50, 90].map((h, i) => (
-                    <div
-                      key={i}
-                      className="w-[3px] bg-neutral-200 group-hover:bg-blue-500 transition-all duration-500 rounded-full"
-                      style={{ height: `${h}%` }}
-                    />
-                  ))}
-                </div>
+                {item.moic && (
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-bold text-neutral-300 uppercase tracking-widest">MOIC</span>
+                    <span className="text-[13px] font-bold text-[#d4af37] leading-tight">{item.moic}</span>
+                  </div>
+                )}
               </div>
 
               {/* Top Accent line on hover */}
