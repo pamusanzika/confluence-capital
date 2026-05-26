@@ -80,7 +80,7 @@ export default function OpportunityCardsList({ onCreate, onEdit, showToast, sear
     <>
       <div className="a-page-head">
         <div>
-          <div className="a-page-title">Opportunity Cards</div>
+          <div className="a-page-title">Sample Debt Reports</div>
           <div className="a-page-sub">
             Cards shown in the Sample Debt Report section. {cards.length} total · {featuredCount}/3 featured.
           </div>

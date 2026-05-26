@@ -27,7 +27,7 @@ const NAV = [
   { id: 'deals',         label: 'Deals',               Icon: Briefcase },
   { id: 'blog',          label: 'Blog',                Icon: BookOpen },
   { id: 'testimonials',  label: 'Testimonials',        Icon: MessageSquare },
-  { id: 'opportunities', label: 'Opportunity Cards',   Icon: Layers },
+  { id: 'opportunities', label: 'Sample Debt Reports', Icon: Layers },
   { id: 'homestats',     label: 'Home Stats',          Icon: TrendingUp },
 ]
 const NAV2 = [
@@ -269,8 +269,8 @@ export default function AdminApp() {
     'blog-form': ['Workspace', 'Blog', editingBlog ? 'Edit Post' : 'New Post'],
     testimonials: ['Workspace', 'Testimonials'],
     'testimonial-form': ['Workspace', 'Testimonials', editingTestimonial ? 'Edit Testimonial' : 'New Testimonial'],
-    opportunities: ['Workspace', 'Opportunity Cards'],
-    'opportunity-form': ['Workspace', 'Opportunity Cards', editingCard ? 'Edit Card' : 'New Card'],
+    opportunities: ['Workspace', 'Sample Debt Reports'],
+    'opportunity-form': ['Workspace', 'Sample Debt Reports', editingCard ? 'Edit Card' : 'New Card'],
     homestats: ['Workspace', 'Home Stats'],
     newsletter: ['Workspace', 'Newsletter Subscriptions'],
     settings: ['Workspace', 'Settings'],
