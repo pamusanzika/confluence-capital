@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   LayoutDashboard, Briefcase, BookOpen, Settings as SettingsIcon, LogOut,
-  Search, ChevronRight, Menu, X, BarChart2, MessageSquare, TrendingUp, Mail,
+  Search, ChevronRight, Menu, X, BarChart2, MessageSquare, TrendingUp, Mail, Layers,
 } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import './admin.css'
@@ -19,13 +19,16 @@ import TestimonialsList from './pages/testimonials/TestimonialsList'
 import TestimonialForm from './pages/testimonials/TestimonialForm'
 import HomeStats from './pages/HomeStats'
 import NewsletterList from './pages/NewsletterList'
+import OpportunityCardsList from './pages/opportunities/OpportunityCardsList'
+import OpportunityCardForm from './pages/opportunities/OpportunityCardForm'
 
 const NAV = [
-  { id: 'dashboard', label: 'Dashboard', Icon: LayoutDashboard },
-  { id: 'deals', label: 'Deals', Icon: Briefcase },
-  { id: 'blog', label: 'Blog', Icon: BookOpen },
-  { id: 'testimonials', label: 'Testimonials', Icon: MessageSquare },
-  { id: 'homestats', label: 'Home Stats', Icon: TrendingUp },
+  { id: 'dashboard',     label: 'Dashboard',          Icon: LayoutDashboard },
+  { id: 'deals',         label: 'Deals',               Icon: Briefcase },
+  { id: 'blog',          label: 'Blog',                Icon: BookOpen },
+  { id: 'testimonials',  label: 'Testimonials',        Icon: MessageSquare },
+  { id: 'opportunities', label: 'Opportunity Cards',   Icon: Layers },
+  { id: 'homestats',     label: 'Home Stats',          Icon: TrendingUp },
 ]
 const NAV2 = [
   { id: 'analytics', label: 'Analytics', Icon: BarChart2 },
@@ -154,6 +157,8 @@ export default function AdminApp() {
   const [editingDeal, setEditingDeal] = useState(null)
   const [editingBlog, setEditingBlog] = useState(null)
   const [editingTestimonial, setEditingTestimonial] = useState(null)
+  const [editingCard, setEditingCard] = useState(null)
+  const [currentFeaturedCount, setCurrentFeaturedCount] = useState(0)
   const [counts, setCounts] = useState({ deals: null, blogs: null, testimonials: null })
   const [searchQuery, setSearchQuery] = useState('')
   const [toast, setToast] = useState('')
@@ -220,6 +225,7 @@ export default function AdminApp() {
     setEditingDeal(null)
     setEditingBlog(null)
     setEditingTestimonial(null)
+    setEditingCard(null)
     setSearchQuery('')
   }
 
@@ -229,6 +235,8 @@ export default function AdminApp() {
   function goEditBlog(b) { setSearchQuery(''); setEditingBlog(b); setRoute('blog-form') }
   function goCreateTestimonial() { setSearchQuery(''); setEditingTestimonial(null); setRoute('testimonial-form') }
   function goEditTestimonial(t) { setSearchQuery(''); setEditingTestimonial(t); setRoute('testimonial-form') }
+  function goCreateCard(featuredCount) { setSearchQuery(''); setEditingCard(null); setCurrentFeaturedCount(featuredCount ?? 0); setRoute('opportunity-form') }
+  function goEditCard(c, featuredCount) { setSearchQuery(''); setEditingCard(c); setCurrentFeaturedCount(featuredCount ?? 0); setRoute('opportunity-form') }
 
   function handleDealSaved() {
     showToast(`✓ Deal ${editingDeal ? 'updated' : 'published'} successfully`)
@@ -248,6 +256,11 @@ export default function AdminApp() {
     setRoute('testimonials')
   }
 
+  function handleCardSaved() {
+    showToast(`✓ Card ${editingCard ? 'updated' : 'created'} successfully`)
+    setRoute('opportunities')
+  }
+
   const crumbs = {
     dashboard: ['Workspace', 'Dashboard'],
     deals: ['Workspace', 'Deals'],
@@ -256,13 +269,15 @@ export default function AdminApp() {
     'blog-form': ['Workspace', 'Blog', editingBlog ? 'Edit Post' : 'New Post'],
     testimonials: ['Workspace', 'Testimonials'],
     'testimonial-form': ['Workspace', 'Testimonials', editingTestimonial ? 'Edit Testimonial' : 'New Testimonial'],
+    opportunities: ['Workspace', 'Opportunity Cards'],
+    'opportunity-form': ['Workspace', 'Opportunity Cards', editingCard ? 'Edit Card' : 'New Card'],
     homestats: ['Workspace', 'Home Stats'],
     newsletter: ['Workspace', 'Newsletter Subscriptions'],
     settings: ['Workspace', 'Settings'],
     analytics: ['Workspace', 'Analytics'],
   }[route] || ['Workspace']
 
-  const sidebarActive = route === 'deal-form' ? 'deals' : route === 'blog-form' ? 'blog' : route === 'testimonial-form' ? 'testimonials' : route
+  const sidebarActive = route === 'deal-form' ? 'deals' : route === 'blog-form' ? 'blog' : route === 'testimonial-form' ? 'testimonials' : route === 'opportunity-form' ? 'opportunities' : route
 
   if (loading) {
     return (
@@ -372,6 +387,24 @@ export default function AdminApp() {
                 onBack={() => setRoute('testimonials')}
                 onSave={handleTestimonialSaved}
                 showToast={showToast}
+              />
+            )}
+            {route === 'opportunities' && (
+              <OpportunityCardsList
+                onCreate={goCreateCard}
+                onEdit={goEditCard}
+                showToast={showToast}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
+            )}
+            {route === 'opportunity-form' && (
+              <OpportunityCardForm
+                card={editingCard}
+                onBack={() => setRoute('opportunities')}
+                onSave={handleCardSaved}
+                showToast={showToast}
+                currentFeaturedCount={currentFeaturedCount}
               />
             )}
             {route === 'homestats' && (
