@@ -1,39 +1,31 @@
-import React from 'react';
-import { ArrowUpRight, Wind, BrainCircuit, Activity } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowUpRight, Wind, BrainCircuit, Activity, BarChart2, DollarSign, Building2, Leaf, TrendingUp } from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
+
+const ICON_MAP = {
+  wind:     <Wind     className="w-5 h-5 text-white" />,
+  brain:    <BrainCircuit className="w-5 h-5 text-white" />,
+  activity: <Activity className="w-5 h-5 text-white" />,
+  chart:    <BarChart2 className="w-5 h-5 text-white" />,
+  dollar:   <DollarSign className="w-5 h-5 text-white" />,
+  building: <Building2 className="w-5 h-5 text-white" />,
+  leaf:     <Leaf     className="w-5 h-5 text-white" />,
+  trend:    <TrendingUp className="w-5 h-5 text-white" />,
+};
 
 const OpportunityCredit = () => {
-  const opportunities = [
-    {
-      category: "SUSTAINABLE INFRASTRUCTURE",
-      title: "$50M Green Energy Initiative",
-      description: "Scaling offshore wind capacity in Northern Europe through proprietary turbine technology and sovereign partnerships.",
-      metrics: [
-        { label: "Target IRR", value: "18-22%" },
-        { label: "Entry", value: "Q3 2024" }
-      ],
-      icon: <Wind className="w-5 h-5 text-[white]" />
-    },
-    {
-      category: "DEEP TECH",
-      title: "AI Startup Venture",
-      description: "Revolutionizing supply chain logistics with predictive neural networks. Backed by industry leaders and academic pioneers.",
-      metrics: [
-        { label: "Equity Available", value: "15%" },
-        { label: "Round", value: "Series B" }
-      ],
-      icon: <BrainCircuit className="w-5 h-5 text-[white]" />
-    },
-    {
-      category: "MEDTECH",
-      title: "Healthcare Tech Expansion",
-      description: "Deployment of non-invasive diagnostic tools across 40 tertiary care centers in the Asia-Pacific region.",
-      metrics: [
-        { label: "Valuation", value: "$240M" },
-        { label: "Type", value: "Growth Equity" }
-      ],
-      icon: <Activity className="w-5 h-5 text-[white]" />
-    }
-  ];
+  const [opportunities, setOpportunities] = useState([]);
+
+  useEffect(() => {
+    supabase
+      .from('opportunity_cards')
+      .select('*')
+      .eq('featured', true)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) setOpportunities(data);
+      });
+  }, []);
 
   return (
     <section className="bg-white py-20 px-6 sm:px-12 lg:px-24 text-slate-900">
@@ -59,14 +51,14 @@ const OpportunityCredit = () => {
 
         {/* Opportunity Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {opportunities.map((item, index) => (
-            <div 
-              key={index}
+          {opportunities.map((item) => (
+            <div
+              key={item.id}
               className="group relative bg-[var(--primary-color)] border border-slate-100 p-8 rounded-none shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-amber-200/50"
             >
               <div className="flex justify-between items-start mb-6">
                 <div className="p-3 bg-gradient-to-r from-[#1687f1] to-[#d4af37] rounded-lg group-hover:bg-amber-50 transition-colors">
-                  {item.icon}
+                  {ICON_MAP[item.icon] ?? ICON_MAP.chart}
                 </div>
                 <ArrowUpRight className="w-6 h-6 text-slate-300 group-hover:text-[#0B0F2A] transition-colors" />
               </div>
@@ -84,12 +76,14 @@ const OpportunityCredit = () => {
               </p>
 
               <div className="flex justify-between items-center pt-6 border-t border-slate-50">
-                {item.metrics.map((metric, i) => (
-                  <div key={i} className="flex flex-col">
-                    <span className="text-[11px] text-slate-100 uppercase tracking-wider">{metric.label}</span>
-                    <span className="text-sm font-semibold text-slate-100">{metric.value}</span>
-                  </div>
-                ))}
+                <div className="flex flex-col">
+                  <span className="text-[11px] text-slate-100 uppercase tracking-wider">{item.metric1_label}</span>
+                  <span className="text-sm font-semibold text-slate-100">{item.metric1_value}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] text-slate-100 uppercase tracking-wider">{item.metric2_label}</span>
+                  <span className="text-sm font-semibold text-slate-100">{item.metric2_value}</span>
+                </div>
               </div>
             </div>
           ))}
