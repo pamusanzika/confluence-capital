@@ -103,7 +103,7 @@ export default function Analytics() {
       const [{ data: dl }, { data: bv }, { data: di }] = await Promise.all([
         supabase.from('pdf_downloads').select('*').order('downloaded_at', { ascending: true }),
         supabase.from('blog_views').select('*').order('viewed_at', { ascending: true }),
-        supabase.from('deal_inquiries').select('*').order('submitted_at', { ascending: true }),
+        supabase.from('deal_inquiries').select('*').order('created_at', { ascending: true }),
       ])
       setDownloads(dl || [])
       setViews(bv || [])

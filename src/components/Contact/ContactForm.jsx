@@ -11,7 +11,7 @@ const INTERESTS = [
 ];
 
 const ContactForm = () => {
-  const [form, setForm] = useState({ name: '', email: '', interest: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', interest: '', message: '' });
   const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -32,6 +32,8 @@ const ContactForm = () => {
     const { error } = await supabase.from('deal_inquiries').insert({
       name: form.name.trim(),
       email: form.email.trim(),
+      phone: form.phone.trim() || null,
+      subject: form.interest || null,
       interest: form.interest || null,
       message: form.message.trim() || null,
     });
@@ -40,7 +42,7 @@ const ContactForm = () => {
       setStatus('error');
     } else {
       setStatus('success');
-      setForm({ name: '', email: '', interest: '', message: '' });
+      setForm({ name: '', email: '', phone: '', interest: '', message: '' });
     }
   }
 
@@ -130,7 +132,19 @@ const ContactForm = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-500 ml-1">What Are You Interested In?</label>
+                <label className="text-sm font-semibold text-gray-500 ml-1">Phone</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="+94 77 123 4567"
+                  className="w-full bg-gray-100 border-none rounded-none p-4 text-gray-700 placeholder-gray-300 focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-500 ml-1">Subject</label>
                 <select
                   name="interest"
                   value={form.interest}
