@@ -56,7 +56,7 @@ const WhoWeAre = () => {
 
   return (
 
-    <section className="w-full py-24 lg:pt-15 lg:pb-25 bg-white selection:bg-black selection:text-white">
+    <section className="w-full py-24 lg:pt-35 lg:pb-25 bg-white selection:bg-black selection:text-white">
 
       <div className="max-w-full mx-auto px-6 md:px-12 lg:px-20">
 

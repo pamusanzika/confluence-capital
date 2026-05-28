@@ -7,14 +7,14 @@ import {
 import { supabase } from '../../lib/supabaseClient';
 
 const CATEGORY_ICON = {
-  'Food & Beverage': <UtensilsCrossed size={18} />,
-  'Hospitality':     <BedDouble size={18} />,
-  'Manufacturing':   <Factory size={18} />,
-  'Retail':          <ShoppingCart size={18} />,
-  'Technology':      <Cpu size={18} />,
-  'Real Estate':     <Home size={18} />,
-  'Agriculture':     <Leaf size={18} />,
-  'Healthcare':      <Heart size={18} />,
+  'Food & Beverage': <UtensilsCrossed size={15} />,
+  'Hospitality':     <BedDouble size={15} />,
+  'Manufacturing':   <Factory size={15} />,
+  'Retail':          <ShoppingCart size={15} />,
+  'Technology':      <Cpu size={15} />,
+  'Real Estate':     <Home size={15} />,
+  'Agriculture':     <Leaf size={15} />,
+  'Healthcare':      <Heart size={15} />,
 };
 
 const Brands = () => {
@@ -38,7 +38,7 @@ const Brands = () => {
           irr:     d.tags.irr || '',
           moic:    d.tags.moic || '',
           payback: d.tags.payback || '',
-          icon:    CATEGORY_ICON[d.category] || <BarChart2 size={18} />,
+          icon:    CATEGORY_ICON[d.category] || <BarChart2 size={15} />,
         }));
 
       setStats(mapped);
@@ -51,69 +51,57 @@ const Brands = () => {
   const tripleStats = [...stats, ...stats, ...stats];
 
   return (
-    <section className="w-full py-12 bg-white overflow-hidden">
-      <div className="relative flex items-center">
-        <div className="flex gap-5 animate-scroll-infinite hover:[animation-play-state:paused]">
+    <section className="w-full py-0 bg-white border-y-2 border-neutral-200 overflow-hidden shadow-md">
+      <div className="relative flex items-center h-[50px]">
+        <div className="flex animate-scroll-infinite hover:[animation-play-state:paused]">
           {tripleStats.map((item, index) => (
             <div
               key={index}
-              className="group relative min-w-[280px] h-[180px] bg-[var(--primary-color)] border rounded-none overflow-hidden p-6 transition-all duration-500 border-blue-600/30 shadow-[0_20px_40px_rgba(0,0,0,0.03)]"
+              className="group relative h-[50px] bg-[var(--primary-color)]/85 border-r-2 border-neutral-200 overflow-hidden px-6 flex items-center gap-5 shrink-0 transition-colors duration-300 "
             >
-              {/* Internal Grid/Structure Lines */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50/30 rounded-full blur-3xl opacity-0 transition-opacity duration-700" />
-
-              {/* Header */}
-              <div className="flex justify-between items-start relative z-10">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-1 h-1 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.8)]" />
-                    <span className="text-[9px] font-black text-blue-600 tracking-[0.2em] uppercase">Confluence Data</span>
-                  </div>
-                  <h4 className="text-[10px] font-bold text-neutral-400 tracking-wider uppercase">
-                    {item.label}
-                  </h4>
-                </div>
-                <div className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-400 bg-blue-600 group-hover:text-white transition-all duration-500">
+              {/* CATEGORY ICON & LABEL */}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-blue-400 transition-colors duration-300">
                   {item.icon}
-                </div>
-              </div>
-
-              {/* Main Content */}
-              <div className="mt-6 relative z-10">
-                <span className="text-4xl font-bold bg-gradient-to-r from-[#1687f1] to-[#d4af37] bg-clip-text text-transparent tracking-tighter transition-colors duration-500">
-                  {item.value}
                 </span>
-                {item.title && (
-                  <p className="text-[11px] text-neutral-500 font-medium tracking-tight">
-                    {item.title}
-                  </p>
-                )}
+                <span className="text-[12px] font-extrabold text-neutral-200 tracking-wide uppercase">
+                  {item.label}
+                </span>
               </div>
 
-              {/* Footer - Metric Bar */}
-              <div className="absolute bottom-0 left-0 w-full px-6 py-4 flex items-center justify-between bg-[var(--primary-color)] transition-colors">
-                <div className="flex items-center gap-2">
-                  {item.irr && (
-                    <span className="flex items-center text-[10px] font-bold text-emerald-600">
-                      <TrendingUp size={10} className="mr-1" />
-                      {item.irr}
-                    </span>
-                  )}
-                  <span className="text-[9px] font-bold text-neutral-300 uppercase tracking-widest">
-                    IRR{item.payback ? ` · ${item.payback}` : ''}
+              {/* SEPARATOR DOT */}
+              <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 shrink-0" />
+
+              {/* BRAND / PROJECT TITLE */}
+              {item.title && (
+                <span className="text-[13px] text-blue-400 font-bold max-w-[160px] truncate shrink-0">
+                  {item.title}
+                </span>
+              )}
+
+              {/* MAIN VALUE */}
+              <span className="text-lg font-black bg-gradient-to-r from-[#1687f1] to-[#b3922e] bg-clip-text text-transparent tracking-tight shrink-0">
+                {item.value}
+              </span>
+
+              {/* METRICS DIVISION (IRR & MOIC) */}
+              <div className="flex items-center gap-4 shrink-0 bg-neutral-100/80 px-2.5 py-1 border border-neutral-200 rounded text-[12px]">
+                {item.irr && (
+                  <span className="flex items-center font-extrabold text-emerald-700">
+                    <TrendingUp size={12} className="mr-1" />
+                    {item.irr} 
+                    <span className="text-[9px] text-neutral-500 font-bold ml-0.5">IRR</span>
                   </span>
-                </div>
-
+                )}
+                
                 {item.moic && (
-                  <div className="flex flex-col items-end">
-                    <span className="text-[10px] font-bold text-neutral-300 uppercase tracking-widest">MOIC</span>
-                    <span className="text-[13px] font-bold text-[#d4af37] leading-tight">{item.moic}</span>
-                  </div>
+                  <span className="font-extrabold text-neutral-800">
+                    {item.moic} 
+                    <span className="text-[9px] text-[#b3922e] font-black ml-0.5">MOIC</span>
+                  </span>
                 )}
               </div>
 
-              {/* Top Accent line on hover */}
-              <div className="absolute top-0 left-0 h-[3px] w-0 bg-blue-600 group-hover:w-full transition-all duration-700 ease-in-out" />
             </div>
           ))}
         </div>
@@ -122,10 +110,10 @@ const Brands = () => {
       <style>{`
         @keyframes scroll-infinite {
           0% { transform: translateX(0); }
-          100% { transform: translateX(calc(-33.33% - 20px)); }
+          100% { transform: translateX(-33.3333%); }
         }
         .animate-scroll-infinite {
-          animation: scroll-infinite 40s linear infinite;
+          animation: scroll-infinite 35s linear infinite;
         }
       `}</style>
     </section>

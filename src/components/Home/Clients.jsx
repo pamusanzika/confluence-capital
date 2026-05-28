@@ -47,7 +47,7 @@ const Clients = () => {
   const current = testimonials[index];
 
   return (
-    <section className="relative min-h-screen w-full bg-[#F3F4F6] flex items-center justify-center overflow-hidden py-24">
+    <section className="relative min-h-screen w-full bg-[#F3F4F6] flex items-center justify-center overflow-hidden py-24 lg:pt-35 lg:pb-30">
 
       {/* --- BACKGROUND ORBITAL RINGS --- */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

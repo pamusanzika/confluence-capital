@@ -38,7 +38,7 @@ const StatItem = ({ value, suffix, label, start }) => {
         {count}
         {suffix}
       </span>
-      <span className="text-[14px]  uppercase tracking-widest text-neutral-400">
+      <span className="text-[12px]  uppercase tracking-widest text-blue-400">
         {label}
       </span>
     </div>

@@ -78,8 +78,8 @@ const Navbar = () => {
                         isActive
                           ? goldText
                           : scrolled
-                          ? "text-white font-medium uppercase hover:bg-gradient-to-r hover:from-[#8a6b1f] hover:via-[#d4af37] hover:to-[#b8891a] hover:bg-clip-text hover:text-transparent"
-                          : "text-white/70 font-medium uppercase hover:bg-gradient-to-r  hover:from-[#8a6b1f] hover:via-[#d4af37] hover:to-[#b8891a] hover:bg-clip-text hover:text-transparent"
+                          ? "text-white text-[.9rem] font-medium uppercase hover:bg-gradient-to-r hover:from-[#8a6b1f] hover:via-[#d4af37] hover:to-[#b8891a] hover:bg-clip-text hover:text-transparent"
+                          : "text-white/70 text-[.9rem] font-medium uppercase hover:bg-gradient-to-r  hover:from-[#8a6b1f] hover:via-[#d4af37] hover:to-[#b8891a] hover:bg-clip-text hover:text-transparent"
                       }
                     `}
                   >

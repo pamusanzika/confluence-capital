@@ -1,70 +1,101 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+// Importing company logo from the assets folder
+import logo from '../assets/logo4.png'; 
 
 const LoadingPage = ({ isVisible }) => {
+  // Split phrase into individual characters for an advanced staggered text reveal
+  const statementText = "ESTABLISHING.SECURE.GATEWAY";
+  
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white"
+          exit={{ 
+            opacity: 0, 
+            transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] } 
+          }}
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--primary-color,#0a0a0a)] select-none overflow-hidden"
         >
-          <div className="relative flex flex-col items-center">
-            {/* Minimalist Geometric Loader */}
-            <div className="relative w-24 h-24 mb-8">
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="absolute inset-0 border-[0.5px] border-neutral-200"
+          {/* ADVANCED ANIMATION 1: The Ambient Wealth Eclipse Glow */}
+          {/* A slow-moving, breathing dark eclipse behind the logo to create immense depth */}
+          <motion.div
+            animate={{
+              scale: [1, 1.15, 1],
+              opacity: [0.15, 0.25, 0.15]
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute w-[450px] h-[450px] bg-white/[0.02] filter blur-[80px] pointer-events-none"
+            style={{ mixBlendMode: 'plus-lighter' }}
+          />
+
+          {/* Core Content Container */}
+          <div className="relative flex flex-col items-center justify-center px-6">
+            
+            {/* ADVANCED ANIMATION 2: The Silent Focal Mask Reveal */}
+            {/* Logo emerges through an elegant blur-to-focus and slight forward-scale animation */}
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(10px)", scale: 0.93 }}
+              animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              className="w-52 sm:w-64 md:w-72 h-auto mb-16 flex items-center justify-center"
+            >
+              <img 
+                src={logo} 
+                alt="Company Logo" 
+                className="w-full h-auto object-contain max-h-[310px]"
+                draggable="false"
               />
-              <motion.div
-                animate={{
-                  scale: [1, 0.8, 1],
-                  rotate: [0, -180, -360],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="absolute inset-4 border-[1px] border-neutral-800"
-              />
+            </motion.div>
+
+            {/* Premium Typographic Block */}
+            <div className="flex flex-col items-center space-y-4">
+              
+              {/* ADVANCED ANIMATION 3: Staggered Letter Wave Reveal */}
+              {/* Letters slice into visibility one by one instead of loading all at once */}
+              <div className="flex overflow-hidden py-1">
+                {statementText.split("").map((char, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.04, // Creates the high-end trailing wave effect
+                      ease: [0.16, 1, 0.3, 1]
+                    }}
+                    className="text-[9px] text-center sm:text-[10px] tracking-[0.35em] uppercase font-light text-neutral-400 font-mono"
+                  >
+                    {char === "." ? "\u00A0\u00A0" : char}
+                  </motion.span>
+                ))}
+              </div>
+
+              {/* ADVANCED ANIMATION 4: The Micro-Dot Rhythm Module */}
+              {/* Three architectural square blocks that ripple in opacity */}
+              <div className="flex space-x-2">
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ opacity: [0.2, 1, 0.2] }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                      ease: "easeInOut"
+                    }}
+                    className="w-[3px] h-[3px] bg-neutral-200" // Zero radius sharp squares
+                  />
+                ))}
+              </div>
+
             </div>
 
-            {/* Typography Section */}
-            <div className="overflow-hidden h-6">
-              <motion.p
-                initial={{ y: 30 }}
-                animate={{ y: 0 }}
-                exit={{ y: -30 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="text-[10px] tracking-[0.3em] uppercase font-light text-neutral-500"
-              >
-                Loading Experience
-              </motion.p>
-            </div>
-            
-            {/* Progress Bar Container */}
-            <div className="w-48 h-[1px] bg-neutral-100 mt-6 relative overflow-hidden">
-              <motion.div 
-                initial={{ x: "-100%" }}
-                animate={{ x: "100%" }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-                className="absolute inset-0 bg-neutral-900 w-1/2"
-              />
-            </div>
           </div>
         </motion.div>
       )}

@@ -229,7 +229,7 @@ const BlogDetail = () => {
             transition={{ duration: 1 }}
             className="lg:col-span-8"
           >
-            <div className="blog-content text-zinc-700 leading-relaxed space-y-6">
+            <div className="blog-content text-justify text-zinc-700 leading-relaxed space-y-6">
               {post.content ? (
                 <div
                   className="[&>p]:mb-6 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-zinc-900 [&>h2]:mt-12 [&>h2]:mb-6 [&>blockquote]:border-l-4 [&>blockquote]:border-[#d4af37] [&>blockquote]:pl-6 [&>blockquote]:my-10 [&>blockquote]:italic [&>blockquote]:text-zinc-900 [&>blockquote]:text-xl"
