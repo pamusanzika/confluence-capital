@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, ArrowRight, FileText, BookOpen } from 'lucide-react'
+import { Plus, ArrowRight, BookOpen, Mail } from 'lucide-react'
 import { supabase } from '../supabaseClient'
 
 function normalizeStatus(deal) {
@@ -7,19 +7,26 @@ function normalizeStatus(deal) {
   return { ...deal, status: map[deal.status] ?? deal.status }
 }
 
-export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQuery }) {
+function searchable(value) {
+  return String(value || '').toLowerCase()
+}
+
+export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, onOpenContact, searchQuery }) {
   const [deals, setDeals] = useState([])
   const [blogs, setBlogs] = useState([])
+  const [contactSubmissions, setContactSubmissions] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetch() {
-      const [{ data: d }, { data: b }] = await Promise.all([
+      const [{ data: d }, { data: b }, { data: c }] = await Promise.all([
         supabase.from('deals').select('*').order('created_at', { ascending: false }),
         supabase.from('blogs').select('*').order('created_at', { ascending: false }),
+        supabase.from('deal_inquiries').select('*').order('created_at', { ascending: false }),
       ])
       setDeals((d || []).map(normalizeStatus))
       setBlogs(b || [])
+      setContactSubmissions(c || [])
       setLoading(false)
     }
     fetch()
@@ -198,6 +205,70 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, searchQue
                 ))}
               </tbody>
             </table>
+            </div>
+          )}
+        </div>
+
+        {/* Contact Us Form */}
+        <div className="a-panel">
+          <div className="a-panel-head">
+            <div>
+              <div className="a-panel-title">Contact Us Form</div>
+              <div className="a-panel-sub">Latest messages from the public contact page</div>
+            </div>
+            <button className="a-btn sm ghost" onClick={onOpenContact}>
+              View all <ArrowRight size={13} />
+            </button>
+          </div>
+          {loading ? (
+            <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--muted)', fontSize: 13 }}>Loading...</div>
+          ) : contactSubmissions.length === 0 ? (
+            <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--muted)', fontSize: 13 }}>
+              No contact submissions yet.
+            </div>
+          ) : (
+            <div className="a-table-wrap">
+              <table className="a-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: '42%' }}>Contact</th>
+                    <th>Interest</th>
+                    <th>Submitted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contactSubmissions
+                    .filter(c =>
+                      !searchQuery ||
+                      searchable(c.name).includes(searchQuery.toLowerCase()) ||
+                      searchable(c.email).includes(searchQuery.toLowerCase()) ||
+                      searchable(c.subject).includes(searchQuery.toLowerCase()) ||
+                      searchable(c.interest).includes(searchQuery.toLowerCase())
+                    )
+                    .slice(0, 6)
+                    .map(c => (
+                      <tr key={c.id} onClick={onOpenContact}>
+                        <td>
+                          <div className="a-row-deal">
+                            <div className="a-thumb" style={{ background: 'linear-gradient(135deg,#E8EDF5,#D0D8E8)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                              <Mail size={16} style={{ color: 'var(--muted-2)' }} />
+                            </div>
+                            <div>
+                              <div className="a-row-title">{c.name || '-'}</div>
+                              <div className="a-row-sub" style={{ maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {c.email || c.message || '-'}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ color: 'var(--ink-2)', fontSize: 13 }}>{c.subject || c.interest || '-'}</td>
+                        <td style={{ color: 'var(--muted)', fontSize: 13 }}>
+                          {c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

@@ -19,6 +19,7 @@ import TestimonialsList from './pages/testimonials/TestimonialsList'
 import TestimonialForm from './pages/testimonials/TestimonialForm'
 import HomeStats from './pages/HomeStats'
 import NewsletterList from './pages/NewsletterList'
+import ContactUsList from './pages/ContactUsList'
 import OpportunityCardsList from './pages/opportunities/OpportunityCardsList'
 import OpportunityCardForm from './pages/opportunities/OpportunityCardForm'
 
@@ -32,6 +33,7 @@ const NAV = [
 ]
 const NAV2 = [
   { id: 'analytics', label: 'Analytics', Icon: BarChart2 },
+  { id: 'contact-us', label: 'Contact Us Form', Icon: Mail },
   { id: 'newsletter', label: 'Newsletter', Icon: Mail },
   { id: 'settings', label: 'Settings', Icon: SettingsIcon },
 ]
@@ -94,6 +96,9 @@ function Sidebar({ active, onNav, counts, onLogout, user, isOpen, onClose }) {
         >
           <span className="a-ico"><Icon size={17} /></span>
           <span>{label}</span>
+          {id === 'contact-us' && counts.contact != null && (
+            <span className="a-badge">{counts.contact}</span>
+          )}
         </button>
       ))}
 
@@ -159,7 +164,7 @@ export default function AdminApp() {
   const [editingTestimonial, setEditingTestimonial] = useState(null)
   const [editingCard, setEditingCard] = useState(null)
   const [currentFeaturedCount, setCurrentFeaturedCount] = useState(0)
-  const [counts, setCounts] = useState({ deals: null, blogs: null, testimonials: null })
+  const [counts, setCounts] = useState({ deals: null, blogs: null, testimonials: null, contact: null })
   const [searchQuery, setSearchQuery] = useState('')
   const [toast, setToast] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -203,12 +208,18 @@ export default function AdminApp() {
   }, [sidebarOpen])
 
   async function fetchCounts() {
-    const [{ count: dealCount }, { count: blogCount }, { count: testimonialCount }] = await Promise.all([
+    const [{ count: dealCount }, { count: blogCount }, { count: testimonialCount }, { count: contactCount }] = await Promise.all([
       supabase.from('deals').select('*', { count: 'exact', head: true }),
       supabase.from('blogs').select('*', { count: 'exact', head: true }),
       supabase.from('testimonials').select('*', { count: 'exact', head: true }),
+      supabase.from('deal_inquiries').select('*', { count: 'exact', head: true }),
     ])
-    setCounts({ deals: dealCount ?? 0, blogs: blogCount ?? 0, testimonials: testimonialCount ?? 0 })
+    setCounts({
+      deals: dealCount ?? 0,
+      blogs: blogCount ?? 0,
+      testimonials: testimonialCount ?? 0,
+      contact: contactCount ?? 0,
+    })
   }
 
   function showToast(msg) {
@@ -272,6 +283,7 @@ export default function AdminApp() {
     opportunities: ['Workspace', 'Sample Debt Reports'],
     'opportunity-form': ['Workspace', 'Sample Debt Reports', editingCard ? 'Edit Card' : 'New Card'],
     homestats: ['Workspace', 'Home Stats'],
+    'contact-us': ['Workspace', 'Contact Us Form'],
     newsletter: ['Workspace', 'Newsletter Subscriptions'],
     settings: ['Workspace', 'Settings'],
     analytics: ['Workspace', 'Analytics'],
@@ -332,6 +344,7 @@ export default function AdminApp() {
                 onCreate={goCreateDeal}
                 onOpenDeals={() => navTo('deals')}
                 onOpenBlog={() => navTo('blog')}
+                onOpenContact={() => navTo('contact-us')}
                 searchQuery={searchQuery}
               />
             )}
@@ -415,6 +428,14 @@ export default function AdminApp() {
                 showToast={showToast}
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
+              />
+            )}
+            {route === 'contact-us' && (
+              <ContactUsList
+                showToast={showToast}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                onRefresh={fetchCounts}
               />
             )}
             {route === 'settings' && (

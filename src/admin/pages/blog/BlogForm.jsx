@@ -18,8 +18,11 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
   )
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(post?.image_url || null)
+  const [writerImageFile, setWriterImageFile] = useState(null)
+  const [writerImagePreview, setWriterImagePreview] = useState(post?.writer_image_url || null)
   const [saving, setSaving] = useState('')   // '' | 'draft' | 'published'
   const imageRef = useRef(null)
+  const writerImageRef = useRef(null)
 
   function onImageChange(e) {
     const file = e.target.files?.[0]
@@ -28,22 +31,33 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
     setImagePreview(URL.createObjectURL(file))
   }
 
+  function onWriterImageChange(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setWriterImageFile(file)
+    setWriterImagePreview(URL.createObjectURL(file))
+  }
+
+  async function uploadBlogImage(file) {
+    const path = `${Date.now()}-${file.name}`
+    const { data, error } = await supabase.storage.from('blog-images').upload(path, file, { upsert: true })
+    if (error) throw error
+
+    const publicResult = supabase.storage.from('blog-images').getPublicUrl(data.path)
+    return publicResult?.data?.publicUrl || publicResult?.publicUrl || (
+      `${import.meta.env.VITE_SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/public/blog-images/${data.path}`
+    )
+  }
+
   async function handleSave(saveStatus) {
     if (!title.trim()) { showToast('Please enter a title'); return }
     setSaving(saveStatus)
     try {
-      let image_url = post?.image_url || null
+      let image_url = imagePreview ? (post?.image_url || null) : null
+      let writer_image_url = writerImagePreview ? (post?.writer_image_url || null) : null
 
-      if (imageFile) {
-        const path = `${Date.now()}-${imageFile.name}`
-        const { data, error } = await supabase.storage.from('blog-images').upload(path, imageFile, { upsert: true })
-        if (error) throw error
-
-        const publicResult = supabase.storage.from('blog-images').getPublicUrl(data.path)
-        image_url = publicResult?.data?.publicUrl || publicResult?.publicUrl || (
-          `${import.meta.env.VITE_SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/public/blog-images/${data.path}`
-        )
-      }
+      if (imageFile) image_url = await uploadBlogImage(imageFile)
+      if (writerImageFile) writer_image_url = await uploadBlogImage(writerImageFile)
 
       const payload = {
         title: title.trim(),
@@ -51,6 +65,7 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
         category,
         description,
         writer: writer.trim(),
+        writer_image_url,
         image_url,
         reading_time: readingTime.trim(),
         updated_date: updatedDate || null,
@@ -67,6 +82,11 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
 
       onSave(saveStatus)
     } catch (err) {
+      if (err.message?.includes('writer_image_url')) {
+        showToast('Error: Add writer_image_url column to the blogs table in Supabase, then try again.')
+        setSaving('')
+        return
+      }
       showToast(`Error: ${err.message}`)
     }
     setSaving('')
@@ -203,6 +223,62 @@ export default function BlogForm({ post, onBack, onSave, showToast }) {
                 placeholder="e.g. John Smith"
               />
               <div className="a-hint">Author name displayed on the blog post.</div>
+            </div>
+
+            <div className="a-field-group">
+              <label className="a-lbl">Writer image</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    background: 'linear-gradient(135deg, #1687f1, #d4af37)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    border: '2px dashed var(--border)',
+                  }}
+                  onClick={() => writerImageRef.current?.click()}
+                >
+                  {writerImagePreview ? (
+                    <img
+                      src={writerImagePreview}
+                      alt="Writer preview"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <span style={{ color: '#fff', fontWeight: 700, fontSize: 24 }}>
+                      {writer?.[0]?.toUpperCase() || '?'}
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <button className="a-btn sm" onClick={() => writerImageRef.current?.click()}>
+                    <Upload size={13} /> {writerImagePreview ? 'Replace image' : 'Upload image'}
+                  </button>
+                  {writerImagePreview && (
+                    <button
+                      className="a-btn sm ghost"
+                      style={{ color: 'var(--danger)' }}
+                      onClick={() => { setWriterImageFile(null); setWriterImagePreview(null) }}
+                    >
+                      <Trash2 size={13} /> Remove
+                    </button>
+                  )}
+                  <span style={{ fontSize: 11, color: 'var(--muted)' }}>PNG, JPG up to 8MB</span>
+                </div>
+              </div>
+              <input
+                ref={writerImageRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={onWriterImageChange}
+              />
             </div>
 
             <div className="a-field-group">

@@ -23,6 +23,7 @@ function mapDbPost(p) {
     category: p.category || 'Market Insights',
     img: p.image_url || '',
     author: p.writer || '',
+    authorImage: p.writer_image_url || '',
   };
 }
 
@@ -207,8 +208,12 @@ const BlogDetail = () => {
 
             {post.author && (
               <div className="flex items-center gap-3 text-white/80">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                  <User size={20} className="text-[#d4af37]" />
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+                  {post.authorImage ? (
+                    <img src={post.authorImage} alt={post.author} className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={20} className="text-[#d4af37]" />
+                  )}
                 </div>
                 <p className="text-xs font-bold uppercase tracking-widest">{post.author}</p>
               </div>
