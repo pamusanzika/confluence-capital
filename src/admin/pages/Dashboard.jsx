@@ -11,6 +11,10 @@ function searchable(value) {
   return String(value || '').toLowerCase()
 }
 
+function getPhone(inquiry) {
+  return inquiry.phone || inquiry.phone_number || inquiry.mobile || '-'
+}
+
 export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, onOpenContact, searchQuery }) {
   const [deals, setDeals] = useState([])
   const [blogs, setBlogs] = useState([])
@@ -231,7 +235,8 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, onOpenCon
               <table className="a-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '42%' }}>Contact</th>
+                    <th style={{ width: '36%' }}>Contact</th>
+                    <th>Phone</th>
                     <th>Interest</th>
                     <th>Submitted</th>
                   </tr>
@@ -242,6 +247,9 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, onOpenCon
                       !searchQuery ||
                       searchable(c.name).includes(searchQuery.toLowerCase()) ||
                       searchable(c.email).includes(searchQuery.toLowerCase()) ||
+                      searchable(c.phone).includes(searchQuery.toLowerCase()) ||
+                      searchable(c.phone_number).includes(searchQuery.toLowerCase()) ||
+                      searchable(c.mobile).includes(searchQuery.toLowerCase()) ||
                       searchable(c.subject).includes(searchQuery.toLowerCase()) ||
                       searchable(c.interest).includes(searchQuery.toLowerCase())
                     )
@@ -261,6 +269,7 @@ export default function Dashboard({ onCreate, onOpenDeals, onOpenBlog, onOpenCon
                             </div>
                           </div>
                         </td>
+                        <td style={{ color: 'var(--ink-2)', fontSize: 13, whiteSpace: 'nowrap' }}>{getPhone(c)}</td>
                         <td style={{ color: 'var(--ink-2)', fontSize: 13 }}>{c.subject || c.interest || '-'}</td>
                         <td style={{ color: 'var(--muted)', fontSize: 13 }}>
                           {c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}

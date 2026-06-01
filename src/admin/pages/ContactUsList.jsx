@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { createElement, useState, useEffect } from 'react'
 import { ArrowLeft, Check, Copy, Download, Eye, Mail, MessageSquare, Phone, Search, Trash2 } from 'lucide-react'
 import { supabase } from '../supabaseClient'
 
@@ -103,10 +103,11 @@ export default function ContactUsList({ showToast, searchQuery, onSearchChange, 
 
   function handleExport() {
     const rows = [
-      ['Name', 'Email', 'Interest', 'Message', 'Submitted Date'],
+      ['Name', 'Email', 'Phone', 'Interest', 'Message', 'Submitted Date'],
       ...inquiries.map(i => [
         i.name || '',
         i.email || '',
+        getPhone(i),
         i.interest || '',
         i.message || '',
         formatDate(i.created_at),
@@ -138,7 +139,7 @@ export default function ContactUsList({ showToast, searchQuery, onSearchChange, 
   if (selected) {
     const copyButton = (key, label, text, Icon = Copy) => (
       <button className="a-btn sm" style={{ minHeight: 34 }} onClick={() => handleCopy(key, text)}>
-        {copiedKey === key ? <Check size={13} /> : <Icon size={13} />}
+        {copiedKey === key ? <Check size={13} /> : createElement(Icon, { size: 13 })}
         {copiedKey === key ? 'Copied' : label}
       </button>
     )
@@ -317,9 +318,10 @@ export default function ContactUsList({ showToast, searchQuery, onSearchChange, 
             <table className="a-table">
               <thead>
                 <tr>
-                  <th style={{ width: '26%' }}>Contact</th>
+                  <th style={{ width: '24%' }}>Contact</th>
+                  <th>Phone</th>
                   <th>Subject</th>
-                  <th style={{ width: '34%' }}>Message</th>
+                  <th style={{ width: '30%' }}>Message</th>
                   <th>Submitted</th>
                   <th style={{ width: 90 }}></th>
                 </tr>
@@ -347,6 +349,7 @@ export default function ContactUsList({ showToast, searchQuery, onSearchChange, 
                         </div>
                       </div>
                     </td>
+                    <td style={{ color: 'var(--ink-2)', fontSize: 13, whiteSpace: 'nowrap' }}>{getPhone(i)}</td>
                     <td style={{ color: 'var(--ink-2)', fontSize: 13 }}>{getSubject(i)}</td>
                     <td style={{ color: 'var(--muted)', fontSize: 13 }}>
                       <div style={{ maxWidth: 360, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -382,7 +385,7 @@ export default function ContactUsList({ showToast, searchQuery, onSearchChange, 
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center', padding: '60px 0', color: 'var(--muted)' }}>
+                    <td colSpan={6} style={{ textAlign: 'center', padding: '60px 0', color: 'var(--muted)' }}>
                       {inquiries.length === 0 ? 'No contact submissions yet.' : 'No submissions match your search.'}
                     </td>
                   </tr>
