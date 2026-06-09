@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ScrollToTopHome = () => {
+const ScrollToTopEquity = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -67,4 +67,4 @@ const ScrollToTopHome = () => {
   );
 };
 
-export default ScrollToTopHome;
+export default ScrollToTopEquity;

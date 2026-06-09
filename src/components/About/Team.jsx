@@ -67,7 +67,7 @@ const Team = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-20 bg-[#F9FAFB] overflow-hidden text-zinc-900">
+    <section ref={sectionRef} className="py-20 bg-[white] overflow-hidden text-zinc-900">
       {/* Header - Styled like the reference image */}
       
 
@@ -92,7 +92,7 @@ const Team = () => {
               key={index} 
               className="w-[280px] md:w-[320px] flex-shrink-0 group cursor-pointer"
             >
-              <div className="bg-white border border-zinc-100 rounded-[0rem] overflow-hidden shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:shadow-zinc-200/50 group-hover:-translate-y-1">
+              <div className="bg-white border border-zinc-100 rounded-[0rem] overflow-hidden shadow-2xl transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-zinc-200/50 group-hover:-translate-y-1">
                 {/* Image Container - Smaller Scale */}
                 <div className="h-64 md:h-72 overflow-hidden bg-zinc-100">
                   <img 

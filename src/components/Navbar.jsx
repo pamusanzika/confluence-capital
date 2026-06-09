@@ -20,11 +20,12 @@ const Navbar = () => {
   const goldText =
     "bg-gradient-to-r from-[#8a6b1f] via-[#d4af37] to-[#b8891a] bg-clip-text text-transparent";
 
-  // Fix: Scroll to top on route change
+  // Automatically scroll to top on actual route change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // Track scroll position for background styling
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -35,6 +36,19 @@ const Navbar = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Handle clicks on the navbar links & logo
+  const handleNavLinkClick = (href) => {
+    if (location.pathname === href) {
+      // If already on the page, smoothly scroll to top/hero section
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+    // Always close the mobile menu when a link is clicked
+    setIsOpen(false);
+  };
 
   return (
     <nav
@@ -48,9 +62,11 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
 
-        {/* LOGO */}
+        {/* LOGO (Linked to homepage with scroll-to-top feature) */}
         <div className="flex items-center gap-2">
-          <img src={logo} className="w-[5.5rem] lg:w-[8rem]" alt="logo" />
+          <Link to="/" onClick={() => handleNavLinkClick("/")} className="cursor-pointer">
+            <img src={logo} className="w-[5.5rem] lg:w-[8rem]" alt="logo" />
+          </Link>
         </div>
 
         {/* DESKTOP / TABLET NAV (ONLY LG+) */}
@@ -73,6 +89,7 @@ const Navbar = () => {
                 <li key={link.name}>
                   <Link
                     to={link.href}
+                    onClick={() => handleNavLinkClick(link.href)}
                     className={`transition-all duration-300 font-medium
                       ${
                         isActive
@@ -98,7 +115,6 @@ const Navbar = () => {
             Contact us
           </button>
           </Link>
-          
         </div>
 
         {/* MOBILE + TABLET MENU BUTTON */}
@@ -127,7 +143,7 @@ const Navbar = () => {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => handleNavLinkClick(link.href)}
                     className={`text-2xl font-light transition-all duration-300 ${
                       isActive ? goldText : "text-white"
                     }`}
@@ -139,13 +155,11 @@ const Navbar = () => {
             })}
           </ul>
 
-            
-            <a href='/contact'>
-              <button className="bg-white text-black px-10 py-3 rounded-full text-lg font-medium">
-            Contact us
-          </button>
-            </a>
-          
+          <Link to='/contact' onClick={() => setIsOpen(false)}>
+            <button className="bg-white text-black px-10 py-3 rounded-full text-lg font-medium">
+              Contact us
+            </button>
+          </Link>
         </div>
       )}
     </nav>

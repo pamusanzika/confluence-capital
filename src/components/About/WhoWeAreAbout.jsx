@@ -50,7 +50,7 @@ const WhoWeAreAbout = () => {
   return (
     <section 
       ref={sectionRef} 
-      className="relative w-full min-h-screen bg-[#F3F4F6] flex items-center justify-center py-20 px-4 md:px-10 overflow-hidden"
+      className="relative w-full min-h-screen bg-[white] flex items-center justify-center py-20 px-4 md:px-10 overflow-hidden"
     >
       <div className="max-w-[1400px] w-full grid grid-cols-1 lg:grid-cols-2 gap-0 items-stretch bg-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden border border-stone-100">
         

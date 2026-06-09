@@ -4,6 +4,7 @@ import WhatWeDoEquity from './WhatWeDoEquity'
 import HowWeDoIt from './HowWeDoIt'
 import Opportunity from './Opportunity'
 import SuccessStories from './SuccesssStories'
+import ScrollToTopEquity from './ScrollToTopEquity'
 
 
 const EquityPage = () => {
@@ -14,6 +15,7 @@ const EquityPage = () => {
         <HowWeDoIt />
         <Opportunity />
         <SuccessStories />
+        <ScrollToTopEquity />
     </div>
   )
 }

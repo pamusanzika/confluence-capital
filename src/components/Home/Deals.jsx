@@ -18,9 +18,10 @@ const DealCard = ({ deal, index }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group relative bg-[var(--primary-color)] rounded-none border border-neutral-200 overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-200 transition-all duration-500"
+      // ADDED: "flex flex-col h-full" ensures all cards match the height of the tallest card
+      className="group relative bg-[var(--primary-color)] rounded-none border border-neutral-200 overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-200 transition-all duration-500 flex flex-col h-full"
     >
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden flex-shrink-0">
         <img
           src={deal.image_url || FALLBACK_IMAGE}
           alt={deal.title}
@@ -33,19 +34,21 @@ const DealCard = ({ deal, index }) => {
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h3 className="text-xs font-bold bg-gradient-to-r from-[#1687f1] to-[#d4af37] bg-clip-text text-transparent uppercase tracking-widest mb-1">
-              {deal.title}
-            </h3>
-            <p className="text-sm text-neutral-200 line-clamp-2 leading-relaxed">
-              {deal.short_description}
-            </p>
-          </div>
+      {/* ADDED: "flex flex-col flex-grow" manages content spacing perfectly */}
+      <div className="p-6 flex flex-col flex-grow">
+        
+        {/* MODIFIED: Separated Title and Description so title wraps don't affect descriptions */}
+        <div className="mb-4 flex-grow">
+          <h3 className="text-xs font-bold bg-gradient-to-r from-[#1687f1] to-[#d4af37] bg-clip-text text-transparent uppercase tracking-widest mb-2 min-h-[1rem]">
+            {deal.title}
+          </h3>
+          <p className="text-sm text-neutral-200 line-clamp-2 leading-relaxed">
+            {deal.short_description}
+          </p>
         </div>
 
-        <div className="flex items-center justify-between py-4 mb-6">
+        {/* This block and the button will now always sit locked at the bottom level */}
+        <div className="flex items-center justify-between py-4 mb-6 border-t border-neutral-100/10">
           <div>
             <p className="text-[10px] uppercase text-neutral-200 font-medium tracking-tight">
               {deal.tags?.invRange ? 'Investment Range' : deal.category}
@@ -62,7 +65,7 @@ const DealCard = ({ deal, index }) => {
         <button
           onClick={handleViewDeal}
           disabled={!deal.pdf_url}
-          className="w-full group/btn flex items-center justify-center gap-2 py-3 px-4 rounded-none bg-gradient-to-r from-[#8a6b1f] via-[#d4af37] to-[#b8891a] cursor-pointer text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full group/btn flex items-center justify-center gap-2 py-3 px-4 rounded-none bg-gradient-to-r from-[#8a6b1f] via-[#d4af37] to-[#b8891a] cursor-pointer text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-auto"
         >
           <span className="text-xs font-bold uppercase tracking-widest">
             View Deal Book
@@ -106,7 +109,8 @@ const Deals = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* MODIFIED: Added items-stretch to make sure flex elements match heights on the row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {deals.map((deal, index) => (
             <DealCard key={deal.id} deal={deal} index={index} />
           ))}

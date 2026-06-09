@@ -95,9 +95,9 @@ const Approach = () => {
   }, []);
 
   return (
-    <main ref={mainRef} className="bg-[#F3F4F6] text-neutral-900 antialiased overflow-x-hidden">
+    <main ref={mainRef} className="bg-[white] text-neutral-900 antialiased overflow-x-hidden">
       {/* Container - Large padding, very wide constraint */}
-      <section className="py-24 md:py-32 px-6 md:px-12 lg:px-24 max-w-full mx-auto">
+      <section className="py-24 md:py-32 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
         
         
 

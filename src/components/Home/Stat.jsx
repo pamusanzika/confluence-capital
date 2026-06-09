@@ -76,7 +76,7 @@ const Stat = () => {
 
   return (
     <div ref={ref} className="mt-12 flex justify-center border-t border-white/20 pt-10">
-      <div className="grid w-full max-w-full grid-cols-2 gap-y-8 gap-x-6 md:grid-cols-4 md:gap-8">
+      <div className="grid w-full max-w-7xl grid-cols-2 gap-y-8 gap-x-6 md:grid-cols-4 md:gap-8">
         {stats.map((item, index) => (
           <StatItem key={index} {...item} start={start} />
         ))}
