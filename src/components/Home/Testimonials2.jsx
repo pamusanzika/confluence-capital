@@ -23,7 +23,7 @@ const Testimonials2 = () => {
   const duplicated = [...testimonials, ...testimonials];
 
   return (
-    <section className="bg-[#F3F4F6] pt-2 pb-20 overflow-hidden">
+    <section className="bg-[white] pt-2 pb-20 overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -48,12 +48,14 @@ const Testimonials2 = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1687f1] to-[#d4af37] flex items-center justify-center border-2 border-white shadow-sm">
-                      <span className="text-white font-bold text-base">
-                        {item.customer_name?.[0]?.toUpperCase() || '?'}
-                      </span>
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1687f1] to-[#d4af37] flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
+                      {item.image_url
+                        ? <img src={item.image_url} alt={item.customer_name} className="w-full h-full object-cover" />
+                        : <span className="text-white font-bold text-base">{item.customer_name?.[0]?.toUpperCase() || '?'}</span>
+                      }
                     </div>
                     <div className="absolute inset-0 rounded-full border border-black/5" />
+                    
                   </div>
                   <div>
                     <h4 className="font-bold text-neutral-400 text-sm">{item.customer_name}</h4>

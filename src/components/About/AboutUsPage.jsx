@@ -7,6 +7,7 @@ import OurExpertise from './OurExpertise'
 import OurImpact from './OurImpact'
 import Team from './Team'
 import CallToActionAbout from './CallToActionAbout'
+import ScrollToTopAbout from './ScrollToTopAbout'
 
 const AboutUsPage = () => {
   return (
@@ -19,6 +20,7 @@ const AboutUsPage = () => {
         <OurImpact />
         <Team />
         <CallToActionAbout />
+        <ScrollToTopAbout />
     </div>
   )
 }

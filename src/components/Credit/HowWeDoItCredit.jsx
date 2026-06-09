@@ -47,38 +47,42 @@ const HowWeDoItCredit = () => {
         </div>
 
         {/* The Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--primary-color)] border border-[var(--primary-color)] shadow-2xl shadow-zinc-200/50">
-          {steps.map((step, index) => (
-            <div 
-              key={index} 
-              className="group relative bg-white p-10 flex flex-col justify-between min-h-[420px] transition-all duration-500 hover:bg-zinc-50"
-            >
-              <div>
-                {/* Header within Card */}
-                <div className="flex justify-between items-start mb-12">
-                  <div className="p-3 rounded-full bg-gradient-to-r from-[#1687f1] to-[#d4af37] border border-zinc-100 duration-500">
-                    {step.icon}
-                  </div>
-                  <span className="text-4xl font-black text-zinc-100 group-hover:text-zinc-200 transition-colors duration-500">
-                    {step.tag}
-                  </span>
-                </div>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-slate-800/40 border border-slate-800">
+  {steps.map((step, index) => (
+    <div 
+      key={index} 
+      className="group relative bg-[var(--primary-color)] p-8 flex flex-col justify-between min-h-[420px] transition-all duration-500 hover:bg-[#0c1633] overflow-hidden"
+    >
+      {/* Subtle top accent line on hover */}
+      <div className="absolute top-0 left-0 w-full h-[2px] bg-[#d4af37] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
-                <h3 className="text-2xl font-semibold text-zinc-900 mb-6 tracking-tight">
-                  {step.title}
-                </h3>
-                
-                <p className="text-zinc-500 text-sm leading-relaxed font-light group-hover:text-zinc-700">
-                  {step.desc}
-                </p>
-              </div>
-
-             
-              
-              
-            </div>
-          ))}
+      <div>
+        {/* Header within Card */}
+        <div className="flex justify-between items-start mb-16">
+          {/* Sharp, clean icon container without rounded corners */}
+          <div className="text-[#d4af37] transition-transform duration-500 group-hover:scale-110">
+            {step.icon}
+          </div>
+          {/* Minimal, high-end step indicator */}
+         
         </div>
+
+        {/* Title - Sharp and clean */}
+        <h3 className="text-[1.5rem] font-bold bg-gradient-to-r from-[#1687f1] to-[#d4af37] bg-clip-text text-transparent mb-4 tracking-tight">
+          {step.title}
+        </h3>
+        
+        {/* Description - High contrast readability over navy */}
+        <p className="text-slate-400 text-sm leading-relaxed font-light transition-colors duration-300 group-hover:text-slate-300">
+          {step.desc}
+        </p>
+      </div>
+
+      {/* Decorative Corner Accent to give it a premium, secure financial feel */}
+      <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-slate-800 group-hover:border-[#d4af37] transition-colors duration-500" />
+    </div>
+  ))}
+</div>
 
       </div>
     </section>

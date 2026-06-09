@@ -205,10 +205,10 @@ const HomeHero = () => {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#032136]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[var(--primary-color)]" />
       </motion.div>
 
-      {/*<FloatingDust /> */}
+      <FloatingDust /> 
 
       <div className="relative z-20 w-full flex flex-col justify-between pb-12 pt-40 px-0">
         
@@ -244,10 +244,13 @@ const HomeHero = () => {
             </div>
             
             <div>
-              <button className="group cursor-pointer relative px-8 py-4 bg-gradient-to-r from-[#8a6b1f] via-[#d4af37] to-[#b8891a] text-white flex items-center gap-2 transition-all hover:bg-[#0a0aaa] active:scale-95">
+              <a href='/about'>
+                 <button className="group cursor-pointer relative px-8 py-4 bg-gradient-to-r from-[#8a6b1f] via-[#d4af37] to-[#b8891a] text-white flex items-center gap-2 transition-all hover:bg-[#0a0aaa] active:scale-95">
                 <span className="text-sm font-medium tracking-wide">More About Us</span>
                 <ArrowRight className="w-4 h-4 transition-all group-hover:scale-120" />
               </button>
+              </a>
+             
             </div>
           </div>
 

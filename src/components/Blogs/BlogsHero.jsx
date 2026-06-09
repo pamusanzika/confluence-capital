@@ -92,7 +92,7 @@ const BlogsHero = () => {
         </Canvas>
         
         {/* Dark overlays to ensure text is the priority */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050609] via-transparent to-[#050609]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050609] via-transparent to-[#080f25]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050609_90%)]" />
       </div>
 

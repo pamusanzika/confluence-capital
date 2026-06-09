@@ -58,7 +58,7 @@ const WhoWeAre = () => {
 
     <section className="w-full py-24 lg:pt-35 lg:pb-25 bg-white selection:bg-black selection:text-white">
 
-      <div className="max-w-full mx-auto px-6 md:px-12 lg:px-20">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
 
        
 
@@ -93,25 +93,13 @@ const WhoWeAre = () => {
 
            
 
-            <Link to='/about'>
 
-
-
-             <button className="group cursor-pointer flex items-center gap-3 py-3 px-8 bg-[var(--primary-color)] transition-all duration-500 ">
-
-                         <span className="text-[10px] uppercase tracking-widest font-bold text-white">
-
-                           More About Us
-
-                         </span>
-
-                         <ArrowUpRight className="w-4 h-4 text-[#ffffff] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-
-                       </button>
-
-           
-
-            </Link>
+             <Link to="/about">
+                        <button className="group cursor-pointer relative px-8 py-4 bg-transparent text-neutral-900 border border-neutral-300 flex items-center gap-3 transition-all duration-300 hover:border-neutral-900 hover:bg-neutral-50 active:scale-95 rounded-none">
+                          <span className="text-xs font-bold uppercase tracking-widest">More About Us</span>
+                          <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-[#d4af37]" />
+                        </button>
+                      </Link>
 
            
 

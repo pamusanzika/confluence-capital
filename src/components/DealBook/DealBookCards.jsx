@@ -85,7 +85,7 @@ const DealBookCards = () => {
   };
 
   return (
-    <section className="bg-gray-50 py-20 px-6 sm:px-12 lg:px-24">
+    <section className="bg-white py-20 px-6 sm:px-12 lg:px-24">
       {/* Header */}
       <div className="mb-20 flex flex-col md:flex-row md:items-end justify-center text-center gap-6">
         <div className="title-reveal">

@@ -69,7 +69,7 @@ const WhyChooseUs = () => {
   return (
     <section 
       ref={sectionRef} 
-      className="bg-[#F3F4F6] py-24 px-6 md:px-16 overflow-hidden"
+      className="bg-[white] py-24 px-6 md:px-16 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
         

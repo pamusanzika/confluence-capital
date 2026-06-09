@@ -18,22 +18,6 @@ const LoadingPage = ({ isVisible }) => {
           }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--primary-color,#0a0a0a)] select-none overflow-hidden"
         >
-          {/* ADVANCED ANIMATION 1: The Ambient Wealth Eclipse Glow */}
-          {/* A slow-moving, breathing dark eclipse behind the logo to create immense depth */}
-          <motion.div
-            animate={{
-              scale: [1, 1.15, 1],
-              opacity: [0.15, 0.25, 0.15]
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute w-[450px] h-[450px] bg-white/[0.02] filter blur-[80px] pointer-events-none"
-            style={{ mixBlendMode: 'plus-lighter' }}
-          />
-
           {/* Core Content Container */}
           <div className="relative flex flex-col items-center justify-center px-6">
             
@@ -57,7 +41,6 @@ const LoadingPage = ({ isVisible }) => {
             <div className="flex flex-col items-center space-y-4">
               
               {/* ADVANCED ANIMATION 3: Staggered Letter Wave Reveal */}
-              {/* Letters slice into visibility one by one instead of loading all at once */}
               <div className="flex overflow-hidden py-1">
                 {statementText.split("").map((char, index) => (
                   <motion.span
@@ -66,7 +49,7 @@ const LoadingPage = ({ isVisible }) => {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{
                       duration: 0.5,
-                      delay: index * 0.04, // Creates the high-end trailing wave effect
+                      delay: index * 0.04, 
                       ease: [0.16, 1, 0.3, 1]
                     }}
                     className="text-[9px] text-center sm:text-[10px] tracking-[0.35em] uppercase font-light text-neutral-400 font-mono"
@@ -77,7 +60,6 @@ const LoadingPage = ({ isVisible }) => {
               </div>
 
               {/* ADVANCED ANIMATION 4: The Micro-Dot Rhythm Module */}
-              {/* Three architectural square blocks that ripple in opacity */}
               <div className="flex space-x-2">
                 {[0, 1, 2].map((i) => (
                   <motion.div
@@ -89,7 +71,7 @@ const LoadingPage = ({ isVisible }) => {
                       delay: i * 0.2,
                       ease: "easeInOut"
                     }}
-                    className="w-[3px] h-[3px] bg-neutral-200" // Zero radius sharp squares
+                    className="w-[3px] h-[3px] bg-neutral-200" 
                   />
                 ))}
               </div>

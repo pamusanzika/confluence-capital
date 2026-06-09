@@ -5,6 +5,7 @@ import { Calendar, Clock, User, ChevronLeft, ArrowUpRight } from 'lucide-react';
 import { blogPosts, latestInsights } from './blogData';
 import { supabase } from '../../lib/supabaseClient';
 import { slugify } from '../../lib/slugify';
+import ScrollToTopBlogs from './ScrollToTopBlogs';
 
 // Map a raw Supabase blog row to the shape BlogDetail expects
 function mapDbPost(p) {
@@ -370,6 +371,7 @@ const BlogDetail = () => {
           </Link>
         </div>
       </section>
+      <ScrollToTopBlogs />
     </div>
   );
 };

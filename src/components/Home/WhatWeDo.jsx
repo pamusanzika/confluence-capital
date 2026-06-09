@@ -32,7 +32,7 @@ const services = [
 const WhatWeDo = () => {
   return (
     <section className="py-24 bg-[var(--primary-color)] text-white">
-      <div className="max-w-full mx-auto px-4 lg:px-20">
+      <div className="max-w-7xl mx-auto px-4 lg:px-20">
         
         {/* HEADER SECTION */}
         <div className="flex flex-col lg:flex-row justify-between items-start mb-20 gap-10 lg:gap-20">
@@ -50,13 +50,16 @@ const WhatWeDo = () => {
             </p>
 
             <Link to="/deal-book">
-              <button className="group cursor-pointer flex items-center gap-3 py-3 px-8 bg-gradient-to-r from-[#1687f1] to-[#d4af37] transition-all duration-500">
+              <button className="group cursor-pointer flex items-center gap-3 py-4 px-8 bg-gradient-to-r from-[#1687f1] to-[#d4af37] transition-all duration-500">
                 <span className="text-[10px] uppercase tracking-widest font-bold text-white">
                   Explore Our Deal Book
                 </span>
                 <ArrowUpRight className="w-4 h-4 text-[#ffffff] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </button>
             </Link>
+
+
+             
           </div>
         </div>
 
@@ -65,7 +68,7 @@ const WhatWeDo = () => {
           {services.map((service, index) => (
             <div
               key={index}
-              className="group relative bg-[#041520] border border-white/5 p-8 h-full flex flex-col justify-between hover:bg-[#031624] transition-all duration-500 overflow-hidden"
+              className="group relative bg-[#0a1733] border border-white/5 p-8 h-full flex flex-col justify-between hover:bg-[#081738] transition-all duration-500 overflow-hidden"
             >
               {/* Corner Accent */}
               <div className="absolute top-0 right-0 w-16 h-16 bg-[#1687f1]/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

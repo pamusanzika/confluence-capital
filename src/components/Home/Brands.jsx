@@ -51,13 +51,13 @@ const Brands = () => {
   const tripleStats = [...stats, ...stats, ...stats];
 
   return (
-    <section className="w-full py-0 bg-white border-y-2 border-neutral-200 overflow-hidden shadow-md">
+    <section className="w-full pt-5 pb-0 bg-[var(--primary-color)]  overflow-hidden shadow-md">
       <div className="relative flex items-center h-[50px]">
         <div className="flex animate-scroll-infinite hover:[animation-play-state:paused]">
           {tripleStats.map((item, index) => (
             <div
               key={index}
-              className="group relative h-[50px] bg-[var(--primary-color)]/85 border-r-2 border-neutral-200 overflow-hidden px-6 flex items-center gap-5 shrink-0 transition-colors duration-300 "
+              className="group relative h-[50px] bg-[var(--primary-color)]/95 border border-neutral-700 overflow-hidden px-6 flex items-center gap-5 shrink-0 transition-colors duration-300 "
             >
               {/* CATEGORY ICON & LABEL */}
               <div className="flex items-center gap-2 shrink-0">

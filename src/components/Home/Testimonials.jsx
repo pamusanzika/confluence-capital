@@ -23,7 +23,7 @@ const Testimonials = () => {
   const duplicated = [...testimonials, ...testimonials];
 
   return (
-    <section className="bg-[#F3F4F6] overflow-hidden">
+    <section className="bg-[white] overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}

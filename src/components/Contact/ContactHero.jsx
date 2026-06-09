@@ -140,7 +140,7 @@ const ContactHero = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#050609_95%)]" />
       </div>
 
-      <div className="absolute inset-0 z-[5] bg-black/50" />
+      <div className="absolute inset-0 z-[5] bg-black/0" />
 
       {/* Hero content section structure and text remains identical */}
       <div className="relative z-10 max-w-[75rem] w-full flex flex-col items-center px-6">

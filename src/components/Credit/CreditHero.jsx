@@ -94,7 +94,7 @@ const CreditHero = () => {
       </div>
 
       {/* Adding a subtle dark overlay to improve text readability */}
-      <div className="absolute inset-0 z-[5] bg-black/50" />
+      <div className="absolute inset-0 z-[5] bg-[black]/10" />
 
       <div className="relative z-10 max-w-[75rem] w-full flex flex-col items-center px-6">
         <motion.div

@@ -103,9 +103,11 @@ const HowWeDoIt = () => {
 
           {/* End Slide */}
           <div className="flex h-[500px] w-[300px] items-center justify-center shrink-0">
-             <button className="px-8 py-4 bg-gradient-to-r from-[#1687f1] to-[#d4af37] text-black font-bold rounded-none hover:bg-amber-400 transition-colors">
+            <a href='/contact'>
+               <button className="cursor-pointer px-8 py-4 bg-gradient-to-r from-[#1687f1] to-[#d4af37] text-black font-bold rounded-none hover:bg-amber-400 transition-colors">
               CONTACT US
              </button>
+            </a>
           </div>
         </motion.div>
       </div>

@@ -93,7 +93,7 @@ const OurImpact = () => {
   }));
 
   return (
-    <section className="bg-[#F8F9FF] py-24 px-6 overflow-hidden">
+    <section className="bg-[white] py-24 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="mb-20 flex flex-col md:flex-row md:items-end justify-center text-center gap-6">
           <div className="title-reveal">

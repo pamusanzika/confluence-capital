@@ -47,7 +47,7 @@ const ContactForm = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen flex items-center justify-center p-6 md:p-12">
+    <div className="bg-white min-h-screen flex items-center justify-center p-6 md:p-12">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
         {/* Left Side: Content */}

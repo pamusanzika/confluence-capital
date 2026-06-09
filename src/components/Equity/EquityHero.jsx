@@ -69,7 +69,7 @@ const EquityHero = () => {
       <div className="absolute inset-0 z-0">
         <Canvas shadows camera={{ position: [0, 0, 15], fov: 40 }} gl={{ antialias: true }}>
           <Environment preset="city" />
-          <color attach="background" args={["#0B0F2A"]} />
+          <color attach="background" args={["#080f25"]} />
           <spotLight position={[10, 15, 10]} angle={0.25} penumbra={1} intensity={2500} color="#fff4d6" />
           <pointLight position={[-10, -10, -5]} intensity={1200} color="#d4af37" />
           <TreasureScene />
@@ -77,7 +77,7 @@ const EquityHero = () => {
       </div>
 
       {/* 2. READABILITY OVERLAY */}
-      <div className="absolute inset-0 z-[5] pointer-events-none bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.9)_100%)]" />
+      <div className="absolute inset-0 z-[5] pointer-events-none bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.3)_100%)]" />
 
       {/* 3. CONTENT AREA */}
       <div className="relative z-10 max-w-[75rem] w-full flex flex-col items-center px-6">
