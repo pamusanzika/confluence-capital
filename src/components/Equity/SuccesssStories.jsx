@@ -15,7 +15,7 @@ function mapDbPost(p) {
     title: p.title,
     description: p.short_description || '',
     date: rawDate
-      ? new Date(rawDate).toLocaleDateString('en-US', { month: 'SHORT', year: 'numeric' }).toUpperCase()
+      ? new Date(rawDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase()
       : 'MAY 2026',
     category: p.category || 'Equity',
     img: p.image_url || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',

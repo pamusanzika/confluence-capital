@@ -32,14 +32,16 @@ const HOME_STATS = [
   { key: 'payback',   label: 'Payback Period', placeholder: 'e.g. 36 months',   Icon: Timer      },
 ]
 
+const DISPLAY_STATUS = { Closed: 'Sold', Ongoing: 'Open' }
+const DATABASE_STATUS = { Sold: 'Closed', Open: 'Ongoing' }
+
 export default function DealForm({ deal, onBack, onSave, showToast }) {
   const isEdit = !!deal
   const [title, setTitle] = useState(deal?.title || '')
   const [desc, setDesc] = useState(deal?.short_description || '')
   const [category, setCategory] = useState(deal?.category || CATEGORIES[0])
   const [status, setStatus] = useState(() => {
-    const map = { Closed: 'Sold', Ongoing: 'Open' }
-    return map[deal?.status] ?? deal?.status ?? 'Open'
+    return DISPLAY_STATUS[deal?.status] ?? deal?.status ?? 'Open'
   })
   const [tags, setTags] = useState(deal?.tags || {})
   const [pub, setPub] = useState(new Set(deal?.public_tags || []))
@@ -116,7 +118,7 @@ export default function DealForm({ deal, onBack, onSave, showToast }) {
         title: title.trim(),
         short_description: desc.trim(),
         category,
-        status,
+        status: DATABASE_STATUS[status] ?? status,
         featured,
         image_url,
         pdf_url,

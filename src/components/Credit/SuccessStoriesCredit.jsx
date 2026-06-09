@@ -2,39 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { slugify } from '../../lib/slugify';
+import { blogPosts } from '../Blogs/blogData';
 
-// Built-in resilient fallbacks so the component matches your exact structure if the DB is empty
-const FALLBACK_CREDIT_DATA = [
-  {
-    id: 'fallback-credit-1',
-    slug: 'fintech-25m-series-b-for-unicorn',
-    title: '$25M Series B for Unicorn',
-    description: 'Facilitated digital banking expansion across emerging markets.',
-    img: 'https://i.pinimg.com/1200x/7a/59/1c/7a591c57ae5e0d37b20e482b06788474.jpg',
-    date: 'MAY 2026',
-    category: 'Credit'
-  },
-  {
-    id: 'fallback-credit-2',
-    slug: 'esg-commitment-15m-green-bond',
-    title: '$15M Green Bond',
-    description: 'Preserving 10,000 hectares of critical ecosystem.',
-    img: 'https://i.pinimg.com/1200x/de/3d/94/de3d9419e12775423c7e8e1bf7927190.jpg',
-    date: 'APR 2026',
-    category: 'Credit'
-  },
-  {
-    id: 'fallback-credit-3',
-    slug: 'renewables-50m-solar-funding',
-    title: '$50M Solar Funding',
-    description: 'Next-gen solar array implementation for clean energy.',
-    img: 'https://i.pinimg.com/1200x/59/13/ce/5913ceeba1308a7f76578a98526be543.jpg',
-    date: 'MAR 2026',
-    category: 'Credit'
-  }
-];
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800';
 
-// Maps real-time data streaming back from your Supabase engine (Identical to Equity mapping structure)
 function mapDbPost(p) {
   const rawDate = p.updated_date || p.created_at;
   return {
@@ -43,12 +14,28 @@ function mapDbPost(p) {
     title: p.title,
     description: p.short_description || '',
     date: rawDate
-      ? new Date(rawDate).toLocaleDateString('en-US', { month: 'SHORT', year: 'numeric' }).toUpperCase()
+      ? new Date(rawDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase()
       : 'MAY 2026',
     category: p.category || 'Credit',
-    img: p.image_url || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',
+    img: p.image_url || FALLBACK_IMAGE,
   };
 }
+
+function mapStaticPost(p) {
+  return {
+    id: p.id,
+    slug: p.slug || slugify(p.title),
+    title: p.title,
+    description: p.description || p.preview || '',
+    date: p.date
+      ? new Date(p.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase()
+      : 'MAY 2026',
+    category: p.category || 'Credit',
+    img: p.img || FALLBACK_IMAGE,
+  };
+}
+
+const FALLBACK_CREDIT_DATA = (blogPosts.Credit || []).slice(0, 3).map(mapStaticPost);
 
 const SuccessStoriesCredit = () => {
   const [stories, setStories] = useState([]);
